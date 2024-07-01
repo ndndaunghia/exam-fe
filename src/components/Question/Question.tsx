@@ -1,7 +1,15 @@
 import { LegacyRef, forwardRef } from "react";
 
 const Question = (
-  { questionIndex, id }: { questionIndex: number; id: string },
+  {
+    questionIndex,
+    id,
+    handleSelectAnswer,
+  }: {
+    questionIndex: number;
+    id: string;
+    handleSelectAnswer: React.FC<number>;
+  },
   ref: LegacyRef<HTMLDivElement> | undefined
 ) => {
   return (
@@ -32,6 +40,7 @@ const Question = (
               name={id}
               id={`question-${questionIndex}-a`}
               className="accent-[#517C96]"
+              onClick={() => handleSelectAnswer(questionIndex)}
             />
             <label htmlFor={`question-${questionIndex}-a`}>A. (1; 3)</label>
           </div>
@@ -41,6 +50,7 @@ const Question = (
               name={id}
               id={`question-${questionIndex}-b`}
               className="accent-[#517C96]"
+              onClick={() => handleSelectAnswer(questionIndex)}
             />
             <label htmlFor={`question-${questionIndex}-b`}>B. (1; 2)</label>
           </div>
@@ -50,6 +60,7 @@ const Question = (
               name={id}
               id={`question-${questionIndex}-c`}
               className="accent-[#517C96]"
+              onClick={() => handleSelectAnswer(questionIndex)}
             />
             <label htmlFor={`question-${questionIndex}-c`}>C. (2; 3)</label>
           </div>
@@ -59,6 +70,7 @@ const Question = (
               name={id}
               id={`question-${questionIndex}-d`}
               className="accent-[#517C96]"
+              onClick={() => handleSelectAnswer(questionIndex)}
             />
             <label htmlFor={`question-${questionIndex}-d`}>D. (1; 6)</label>
           </div>

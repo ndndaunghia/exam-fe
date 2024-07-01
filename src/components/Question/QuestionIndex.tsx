@@ -4,7 +4,7 @@ const QuestionIndex = ({ itemIndex, handleScrollToQuestion }: { itemIndex: numbe
 
     return (
         <button
-            className="min-w-9 p-1 rounded-md border-[1px] border-blue-300 sm:col-span-3 hover:bg-[#517C96] hover:text-white"
+            className="min-w-max p-1 rounded-md border-[1px] border-blue-300 sm:col-span-3 hover:bg-[#517C96] hover:text-white"
             onClick={() => handleScrollToQuestion(itemIndex)}
         >
             <span className="font-semibold">{itemIndex + 1}</span>
