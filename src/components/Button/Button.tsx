@@ -8,6 +8,8 @@ export const Button: React.FC<ButtonType> = ({
   color,
   backgroundHover,
   icon,
+  width,
+  margin,
   onClick,
 }) => {
   const buttonStyle: React.CSSProperties = {
@@ -15,12 +17,15 @@ export const Button: React.FC<ButtonType> = ({
     color,
     border: "none",
     padding: "0.5rem 0.5rem",
+    fontWeight: "bold",
     minWidth: "10rem",
     borderRadius: "0.75rem",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     transition: "background-color 0.2s ease",
+    width,
+    margin,
   };
 
   const handleMouseEnter = (

@@ -1,9 +1,11 @@
 import studentBanner from "../../assets/student_img_banner.png";
 import Colors from "../../config/colors";
+import useNavigateCustom from "../../hooks/useNavigateCustom";
 import Button from "../Button/Button";
 import { FaBookOpen, FaReact } from "react-icons/fa";
 
 const Banner = () => {
+  const { handleNavigate } = useNavigateCustom();
   return (
     <section className="pt-20">
       <div className="grid max-w-screen-xl px-12 pt-20 pb-8 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:pt-8">
@@ -12,7 +14,7 @@ const Banner = () => {
             Nền tảng
           </p>
 
-          <p className="max-w-2xl mb-4 font-semibold text-center  text-[#009e6a] lg:mb-4 md:text-lg lg:text-4xl ">
+          <p className="max-w-2xl mb-4 font-semibold text-center  text-primary lg:mb-4 md:text-lg lg:text-4xl ">
             Học & Luyện Thi
           </p>
 
@@ -27,7 +29,7 @@ const Banner = () => {
               color="white"
               backgroundHover={Colors.secondaryDarkColor}
               icon={<FaBookOpen color="white" size="2rem" style={{backgroundColor: 'transparent'}}/>}
-              onClick={() => {}}
+              onClick={() => handleNavigate("/course")}
             />
 
             <Button
@@ -36,7 +38,7 @@ const Banner = () => {
               color="white"
               backgroundHover={Colors.primaryDarkColor}
               icon={<FaReact color="white" size="2rem" style={{backgroundColor: 'transparent'}}/>}
-              onClick={() => {}}
+              onClick={() => handleNavigate("/list-test")}
             />
           </div>
         </div>

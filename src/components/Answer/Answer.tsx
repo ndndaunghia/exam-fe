@@ -3,7 +3,7 @@ import React from "react";
 const Answer = () => {
     return (
         <div className="mx-12">
-            <h1 className="my-2 text-[#009e6a] italic">Đúng</h1>
+            <h1 className="my-2 text-primary italic">Đúng</h1>
             <h1 className="my-2 font-semibold">Lời giải</h1>
             <div className="border-1 border-[1px] border-blue-300 p-4 rounded-xl">
                 <p>

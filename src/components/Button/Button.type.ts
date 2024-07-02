@@ -4,6 +4,8 @@ type ButtonType = {
   color: string;
   backgroundHover: string;
   icon?: React.ReactNode;
+  width?: string;
+  margin?: string;
   onClick: () => void;
 };
 
