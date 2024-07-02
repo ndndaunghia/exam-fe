@@ -10,7 +10,7 @@ const TestItem = () => {
     <div className=" max-w-fit p-4 rounded-2xl border-2 shadow-xl">
       <h2 className="font-semibold">IELTS Simulation Listening test 1</h2>
       <div className="flex gap-4 my-4">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center">
           <CiClock2 />
           <p> 30 phút</p>
         </div>
