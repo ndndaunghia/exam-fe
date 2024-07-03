@@ -1,4 +1,4 @@
-import CourseCard from "../components/Course/CourseCard";
+import CourseCard from "../components/CourseCard/CourseCard";
 import Title from "../components/Title";
 import Header from "../components/Header";
 import SidebarItem from "../components/SidebarItem/SidebarItem";

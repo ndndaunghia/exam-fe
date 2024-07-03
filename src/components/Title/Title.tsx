@@ -2,17 +2,7 @@ import { Link } from "react-router-dom";
 
 const Title = ({ title }: { title: string }) => {
   return (
-    // <div
-    //   style={{
-    //     background: `linear-gradient(to right, ${Colors.primaryLightColor}, ${Colors.secondaryLightColor})`,
-    //   }}
-    //   className="px-8 my-10"
-    // >
-    //   <h2 className="text-3xl font-semibold text-center p-8 text-white">
-    //     Khóa học làm giàu
-    //   </h2>
-    // </div>
-    <div className="my-6 px-2 sm:px-4 md:px-8 lg:px-48 py-4 flex justify-between items-center bg-[#f5f5f5]">
+    <div className="my-6 px-2 sm:px-4 md:px-4 lg:px-4 xl:px-40 py-4 flex justify-between items-center bg-[#f5f5f5]">
       <div className="flex gap-4">
         <Link to="/" className="text-lg italic">
           Trang chủ
@@ -25,13 +15,13 @@ const Title = ({ title }: { title: string }) => {
       <div className="flex px-4 py-3 rounded-md border-2 border-gray focus-within:border-secondary overflow-hidden ">
         <input
           type="text"
-          placeholder="Tìm kiếm"
-          className="w-full outline-none bg-transparent text-gray-600 text-sm block lg:hidden"
+          placeholder="Tìm kiếm ..."
+          className="w-full outline-none bg-transparent text-gray-600 text-sm block 2xl:hidden"
         />
         <input
           type="text"
           placeholder="Tìm kiếm khóa học, bài thi, ..."
-          className="w-full outline-none bg-transparent text-gray-600 text-sm hidden lg:block"
+          className="w-full outline-none bg-transparent text-gray-600 text-sm hidden 2xl:block"
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"

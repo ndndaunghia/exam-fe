@@ -6,7 +6,7 @@ function Button2({ content, onClick, active, disabled }: PaginationType) {
   return (
     <button
       className={`flex flex-col cursor-pointer items-center justify-center w-10 h-10 shadow-[0_4px_10px_rgba(0,0,0,0.03)] text-base font-normal transition-colors rounded-lg
-      ${active ? "bg-secondary text-white" : "text-secondary"}
+      ${active ? "bg-secondary-dark text-white" : "text-secondary"}
       ${
         !disabled
           ? "bg-white hover:bg-secondary hover:text-white"

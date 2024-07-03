@@ -1,4 +1,3 @@
-import studentBanner from "../../assets/student_img_banner.png";
 import Colors from "../../config/colors";
 import useNavigateCustom from "../../hooks/useNavigateCustom";
 import Button from "../Button/Button";
@@ -18,7 +17,7 @@ const Banner = () => {
   const { handleNavigate } = useNavigateCustom();
   return (
     <section className="pt-20">
-      <div className="grid max-w-screen-xl px-12 pt-20 pb-8 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:pt-8">
+      <div className="grid max-w-screen-xl px-24 pt-20 pb-8 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:pt-8">
         <div className="place-self-center lg:col-span-8 sm:col-span-12 lg:mr-auto">
           <p className="max-w-2xl mb-4 text-4xl text-center font-semibold leading-none tracking-tight md:text-5xl xl:text-4xl">
             Nền tảng
@@ -32,7 +31,7 @@ const Banner = () => {
             Thông minh
           </p>
 
-          <div className="space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
+          <div className="space-y-4 flex flex-col justify-center items-center sm:flex sm:flex-row sm:space-y-0 sm:space-x-4">
             <Button
               content="Mua khóa học"
               backgroundColor={Colors.secondaryLightColor}
@@ -67,7 +66,10 @@ const Banner = () => {
 
         <div className="lg:mt-0 lg:col-span-4 lg:flex sm:col-span-12 sm: my-12 sm:flex sm:justify-center">
           {/* <img src={studentBanner} alt="hero image" /> */}
-          <Lottie options={defaultOptions} />
+          <Lottie options={defaultOptions} 
+            height={300}
+            width={300}
+          />
         </div>
       </div>
     </section>
