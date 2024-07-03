@@ -3,8 +3,18 @@ import Colors from "../../config/colors";
 import useNavigateCustom from "../../hooks/useNavigateCustom";
 import Button from "../Button/Button";
 import { FaBookOpen, FaReact } from "react-icons/fa";
+import animationData from "../../assets/animation/home-banner-animation.json";
+import Lottie from 'react-lottie';
 
 const Banner = () => {
+  const defaultOptions = {
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice"
+    }
+  };
+
   const { handleNavigate } = useNavigateCustom();
   return (
     <section className="pt-20">
@@ -28,7 +38,13 @@ const Banner = () => {
               backgroundColor={Colors.secondaryLightColor}
               color="white"
               backgroundHover={Colors.secondaryDarkColor}
-              icon={<FaBookOpen color="white" size="2rem" style={{backgroundColor: 'transparent'}}/>}
+              icon={
+                <FaBookOpen
+                  color="white"
+                  size="2rem"
+                  style={{ backgroundColor: "transparent" }}
+                />
+              }
               onClick={() => handleNavigate("/course")}
             />
 
@@ -37,14 +53,21 @@ const Banner = () => {
               backgroundColor={Colors.primaryLightColor}
               color="white"
               backgroundHover={Colors.primaryDarkColor}
-              icon={<FaReact color="white" size="2rem" style={{backgroundColor: 'transparent'}}/>}
+              icon={
+                <FaReact
+                  color="white"
+                  size="2rem"
+                  style={{ backgroundColor: "transparent" }}
+                />
+              }
               onClick={() => handleNavigate("/list-test")}
             />
           </div>
         </div>
 
         <div className="lg:mt-0 lg:col-span-4 lg:flex sm:col-span-12 sm: my-12 sm:flex sm:justify-center">
-          <img src={studentBanner} alt="hero image" />
+          {/* <img src={studentBanner} alt="hero image" /> */}
+          <Lottie options={defaultOptions} />
         </div>
       </div>
     </section>

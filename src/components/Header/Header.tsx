@@ -72,10 +72,10 @@ export default function Header() {
   return (
     <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
       <nav
-        className=" flex items-center justify-between p-4 lg:px-48"
+        className=" flex items-center justify-between p-4 xl:px-40"
         aria-label="Global"
       >
-        <div className="flex lg:flex-1">
+        <div className="flex xl:flex-1">
           <Link to="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <img
@@ -85,7 +85,7 @@ export default function Header() {
             />
           </Link>
         </div>
-        <div className="flex lg:hidden">
+        <div className="flex xl:hidden">
           <button
             type="button"
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
@@ -95,7 +95,7 @@ export default function Header() {
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        <Popover.Group className="hidden lg:flex lg:gap-x-12">
+        <Popover.Group className="hidden xl:flex xl:gap-x-12">
           <Link
             to="/list-test"
             className="text-base font-semibold leading-6 text-gray-900"
@@ -134,14 +134,15 @@ export default function Header() {
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-1"
             >
-              <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
+              <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-gray-900/5">
                 <div className="p-4">
                   {products.map((item) => (
                     <div
                       key={item.name}
-                      className="group relative flex items-center gap-x-6 rounded-lg p-4 text-base leading-6 hover:bg-gray-50"
+                      className="group relative flex items-center gap-x-6 
+                      rounded-xl p-4 text-base leading-6 hover:bg-gray-50"
                     >
-                      <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                      <div className="flex h-11 w-11 flex-none items-center justify-center rounded-xl bg-gray-50 group-hover:bg-white">
                         <item.icon
                           className="h-6 w-6 text-gray-600 group-hover:text-indigo-600"
                           aria-hidden="true"
@@ -160,38 +161,23 @@ export default function Header() {
                     </div>
                   ))}
                 </div>
-                {/* <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
-                  {callsToAction.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className="flex items-center justify-center gap-x-2.5 p-3 text-base font-semibold leading-6 text-gray-900 hover:bg-gray-100"
-                    >
-                      <item.icon
-                        className="h-5 w-5 flex-none text-gray-400"
-                        aria-hidden="true"
-                      />
-                      {item.name}
-                    </a>
-                  ))}
-                </div> */}
               </Popover.Panel>
             </Transition>
           </Popover>
         </Popover.Group>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+        <div className="hidden xl:flex xl:flex-1 xl:justify-end">
           <a
             onClick={openLoginModal}
             href="#"
             className="text-base font-semibold leading-6 text-gray-900"
           >
-            Đăng nhập <span aria-hidden="true">&rarr;</span>
+            Đăng nhập 
           </a>
         </div>
       </nav>
       <Dialog
         as="div"
-        className="lg:hidden"
+        className="xl:hidden"
         open={mobileMenuOpen}
         onClose={setMobileMenuOpen}
       >
@@ -221,7 +207,7 @@ export default function Header() {
                 <Disclosure as="div" className="-mx-3">
                   {({ open }) => (
                     <>
-                      <Disclosure.Button className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                      <Disclosure.Button className="flex w-full items-center justify-between rounded-xl py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                         Product
                         <ChevronDownIcon
                           className={classNames(
@@ -237,7 +223,7 @@ export default function Header() {
                             key={item.name}
                             as="a"
                             href={item.href}
-                            className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                            className="block rounded-xl py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                           >
                             {item.name}
                           </Disclosure.Button>
@@ -248,19 +234,19 @@ export default function Header() {
                 </Disclosure>
                 <a
                   href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  className="-mx-3 block rounded-xl px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Features
                 </a>
                 <a
                   href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  className="-mx-3 block rounded-xl px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Marketplace
                 </a>
                 <a
                   href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  className="-mx-3 block rounded-xl px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Company
                 </a>
@@ -269,7 +255,7 @@ export default function Header() {
                 <a
                   onClick={openLoginModal}
                   href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  className="-mx-3 block rounded-xl px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Đăng nhập
                 </a>
@@ -313,7 +299,7 @@ export default function Header() {
                     Đăng nhập
                   </Dialog.Title>
 
-                  <div className="py-6 px-6 mx-auto lg:py-0">
+                  <div className="py-6 px-6 mx-auto xl:py-0">
                     <div className="w-full bg-white  md:mt-0 xl:p-0">
                       <div className="p-6 space-y-4 md:space-y-6 sm:p-4">
                         <form className="space-y-4 md:space-y-6" action="#">
@@ -328,7 +314,7 @@ export default function Header() {
                               type="email"
                               name="email"
                               id="email"
-                              className="bg-gray-50 border border-gray-300  sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              className="bg-gray-50 border border-gray-300  sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               placeholder="name@company.com"
                               required
                             />
@@ -345,7 +331,7 @@ export default function Header() {
                               name="password"
                               id="password"
                               placeholder="••••••••"
-                              className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-400 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-400 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               required
                             />
                           </div>
@@ -378,7 +364,7 @@ export default function Header() {
                           </div>
                           <button
                             type="submit"
-                            className="w-full text-gray-900 bg-primary hover:bg-primary-light :bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center text-white"
+                            className="w-full text-gray-900 bg-primary hover:bg-primary-light :bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-xl text-sm px-5 py-2.5 text-center text-white"
                           >
                             Đăng nhập
                           </button>
@@ -437,7 +423,7 @@ export default function Header() {
                     Đăng ký
                   </Dialog.Title>
 
-                  <div className="py-6 px-6 mx-auto lg:py-0">
+                  <div className="py-6 px-6 mx-auto xl:py-0">
                     <div className="w-full bg-white  md:mt-0 xl:p-0">
                       <div className="p-6 space-y-4 md:space-y-6 sm:p-4">
                         <form className="space-y-4 md:space-y-6" action="#">
@@ -452,7 +438,7 @@ export default function Header() {
                               type="text"
                               name="username"
                               id="username"
-                              className="bg-gray-50 border border-gray-300  sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              className="bg-gray-50 border border-gray-300  sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               placeholder="nguyen van a"
                               required
                               autoFocus
@@ -469,7 +455,7 @@ export default function Header() {
                               type="email"
                               name="email"
                               id="email"
-                              className="bg-gray-50 border border-gray-300  sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              className="bg-gray-50 border border-gray-300  sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               placeholder="nguyenvana@gmail.com"
                               required
                             />
@@ -486,7 +472,7 @@ export default function Header() {
                               name="password"
                               id="password"
                               placeholder="••••••••"
-                              className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-400 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-400 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               required
                             />
                           </div>
@@ -502,13 +488,13 @@ export default function Header() {
                               name="confirm-password"
                               id="confirm-password"
                               placeholder="••••••••"
-                              className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-400 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-400 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               required
                             />
                           </div>
                           <button
                             type="submit"
-                            className="w-full bg-primary hover:bg-primary-light :bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center text-white"
+                            className="w-full bg-primary hover:bg-primary-light :bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-xl text-sm px-5 py-2.5 text-center text-white"
                           >
                             Đăng ký
                           </button>

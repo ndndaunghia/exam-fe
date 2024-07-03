@@ -4,10 +4,14 @@ import { SlBubbles } from "react-icons/sl";
 import Button from "../Button/Button";
 import Colors from "../../config/colors";
 import useNavigateCustom from "../../hooks/useNavigateCustom";
+import { motion } from "framer-motion";
 const TestItem = () => {
   const { handleNavigate } = useNavigateCustom();
   return (
-    <div className=" max-w-fit p-4 rounded-2xl border-2 shadow-xl">
+    <motion.div
+    whileHover={{ y: -10}}
+    transition={{ type: "keyframes", stiffness: 400 }}
+    className="max-w-fit p-4 rounded-2xl border-2 shadow-xl">
       <h2 className="font-semibold">IELTS Simulation Listening test 1</h2>
       <div className="flex gap-4 my-4">
         <div className="flex items-center">
@@ -44,7 +48,7 @@ const TestItem = () => {
         margin="1rem 0"
         onClick={() => handleNavigate("/exam")}
       />
-    </div>
+    </motion.div>
   );
 };
 
