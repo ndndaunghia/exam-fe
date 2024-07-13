@@ -35,8 +35,8 @@ const Exam: React.FC = () => {
           <span className="font-semibold uppercase">thoát</span>
         </button>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-12 p-4 gap-6">
-        <div className="col-span-1 sm:col-span-10 p-4 rounded-xl bg-white shadow-xl">
+      <div className="grid grid-cols-1 lg:grid-cols-12 p-4 gap-6">
+        <div className="col-span-1 lg:col-span-10 p-4 rounded-xl bg-white shadow-xl">
           {arr.map((item, index) => (
             <>
               <Question
@@ -50,7 +50,7 @@ const Exam: React.FC = () => {
             </>
           ))}
         </div>
-        <div className="col-span-1 sm:col-span-2 p-4 bg-white shadow-xl text-center h-fit sticky top-24">
+        <div className="col-span-1 lg:col-span-2 p-4 bg-white shadow-xl text-center h-fit sticky top-24">
           <ExamController handleScrollToQuestion={handleScrollToQuestion} />
         </div>
       </div>
