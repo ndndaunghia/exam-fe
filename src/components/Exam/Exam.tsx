@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import Question from "../Question";
-import Answer from "../Answer";
 import ExamController from "./ExamController";
+import { ExamProvider } from "../../contexts/ExamContext";
 
 const Exam: React.FC = () => {
   const arr = new Array(10).fill(0);
@@ -17,44 +17,38 @@ const Exam: React.FC = () => {
     }
   };
 
-  const handleSelectAnswer = (index: number) => {
-    console.log(index);
-  };
-
   return (
-    <div className="pt-24 bg-[#f8f9fa]">
-      <div className="flex justify-center items-center gap-10">
-        <h1
-          className="text-center"
-          id="[2022-2023]-sở-gdđt-hà-tĩnh-lần-1-có-đáp-án---đề-thi-thử-tốt-nghiệp-thpt-môn-toán-năm-2022-2023"
-        >
-          [2022-2023] Sở GD&amp;ĐT Hà Tĩnh lần 1 có đáp án - Đề thi thử tốt
-          nghiệp THPT môn Toán năm 2022-2023
-        </h1>
-        <button className="px-6 py-2 rounded-md text-blue-600 border-[1px] border-blue-300 hover:bg-[#517C96] hover:text-white">
-          <span className="font-semibold uppercase">thoát</span>
-        </button>
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-12 p-4 gap-6">
-        <div className="col-span-1 lg:col-span-10 p-4 rounded-xl bg-white shadow-xl">
-          {arr.map((item, index) => (
-            <>
+    <ExamProvider>
+      <div className="pt-24 bg-[#f8f9fa]">
+        <div className="flex justify-center items-center gap-10">
+          <h1
+            className="text-center"
+            id="[2022-2023]-sở-gdđt-hà-tĩnh-lần-1-có-đáp-án---đề-thi-thử-tốt-nghiệp-thpt-môn-toán-năm-2022-2023"
+          >
+            [2022-2023] Sở GD&amp;ĐT Hà Tĩnh lần 1 có đáp án - Đề thi thử tốt
+            nghiệp THPT môn Toán năm 2022-2023
+          </h1>
+          <button className="px-6 py-2 rounded-md text-blue-600 border-[1px] border-blue-300 hover:bg-[#517C96] hover:text-white">
+            <span className="font-semibold uppercase">thoát</span>
+          </button>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 p-4 gap-6">
+          <div className="col-span-1 lg:col-span-10 p-4 rounded-xl bg-white shadow-xl">
+            {arr.map((item, index) => (
               <Question
-                handleSelectAnswer={handleSelectAnswer} 
-                questionIndex={index}
-                key={index}
+                key={`question-${index}`}
                 id={`question-${index}`}
+                questionIndex={index}
                 ref={ref}
               />
-              <Answer />
-            </>
-          ))}
-        </div>
-        <div className="col-span-1 lg:col-span-2 p-4 bg-white shadow-xl text-center h-fit sticky top-24">
-          <ExamController handleScrollToQuestion={handleScrollToQuestion} />
+            ))}
+          </div>
+          <div className="col-span-1 lg:col-span-2 p-4 bg-white shadow-xl text-center h-fit sticky top-24">
+            <ExamController handleScrollToQuestion={handleScrollToQuestion} />
+          </div>
         </div>
       </div>
-    </div>
+    </ExamProvider>
   );
 };
 

@@ -7,7 +7,7 @@ interface ExamControllerProps {
 
 const ExamController: React.FC<ExamControllerProps> = ({ handleScrollToQuestion }) => {
     const arr = new Array(10).fill(0);
-
+    
     return (
         <div className="">
             <div className="mb-4">
@@ -18,13 +18,13 @@ const ExamController: React.FC<ExamControllerProps> = ({ handleScrollToQuestion 
                 <button className="px-12 py-1 rounded-md text-blue-600 border-[1px] border-blue-300 hover:bg-[#517C96] hover:text-white">
                     <span className="font-semibold uppercase">nộp bài</span>
                 </button>
-                <button className="my-4">
+                {/* <button className="my-4">
                     <span className="text-blue-600 italic underline">
                         Khôi phục bài làm
                     </span>
-                </button>
+                </button> */}
             </div>
-            <div className="grid grid-cols-12 gap-2">
+            <div className="grid grid-cols-12 gap-2 my-4">
                 {arr.map((item, index) => (
                     <QuestionIndex
                         key={index}
