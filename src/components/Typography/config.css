@@ -1,0 +1,71 @@
+.typography--variant-h1 {
+  font-size: 6rem;
+  font-weight: 500;
+}
+
+.typography--variant-h2 {
+  font-size: 3.75rem;
+  font-weight: 500;
+}
+
+.typography--variant-h3 {
+  font-size: 3rem;
+  font-weight: 500;
+}
+
+.typography--variant-h4 {
+  font-size: 2.125rem;
+  font-weight: 500;
+}
+
+.typography--variant-h5 {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.typography--variant-h6 {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.typography--variant-subheading1 {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.typography--variant-subheading2 {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.typography--variant-body1 {
+  font-size: 1rem;
+}
+
+.typography--variant-body2 {
+  font-size: 0.875rem;
+}
+
+.typography--font-italic {
+  font-style: italic;
+}
+
+.typography--style-semibold {
+  font-style: semi-bold;
+}
+
+.typography--color-primary {
+  color: #009e6a;
+}
+
+.typography--color-primary-light {
+  color: #33b187;
+}
+
+.typography--color-primary-dark {
+  color: #006e4a;
+}
+
+.typography--color-error {
+  color: #eb5757;
+}
