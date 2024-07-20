@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import { AuthProvider } from "./hooks/useAuth";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import Loading from "./components/Loading";
 
@@ -13,7 +12,6 @@ const ErrorPage = lazy(() => import("./pages/ErrorPage"));
 
 function App() {
   return (
-    <AuthProvider>
       <Router>
         <Suspense fallback={<Loading />}>
           <Routes>
@@ -28,7 +26,6 @@ function App() {
           </Routes>
         </Suspense>
       </Router>
-    </AuthProvider>
   );
 }
 

@@ -1,21 +1,14 @@
-import React, { useEffect } from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+// PrivateRoutes.tsx
 
-const PrivateRoutes = () => {
-  const { auth, openLoginModal } = useAuth();
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Navigate, Outlet } from 'react-router-dom';
+import { selectIsLoggedIn } from '../services/auth/authSlice';
 
-  useEffect(() => {
-    if (!auth.token) {
-      openLoginModal();
-    }
-  }, [auth.token, openLoginModal]);
+const PrivateRoutes: React.FC = () => {
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
-  if (!auth.token) {
-    return <Navigate to="/" />;
-  }
-
-  return <Outlet />;
+  return isLoggedIn ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default PrivateRoutes;

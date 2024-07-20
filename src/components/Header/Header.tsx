@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useCallback, useState } from "react";
 
 import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
 import {
@@ -59,15 +59,33 @@ function classNames(...classes: string[]) {
 }
 
 export default function Header() {
-  const {
-    isLoginModalOpen,
-    openLoginModal,
-    closeLoginModal,
-    isSignUpModalOpen,
-    openSignUpModal,
-    closeSignUpModal,
-  } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+
+  const userNavigation = [
+    { name: "Trang cá nhân", href: "/profile" },
+    { name: "Cài đặt", href: "/settings" },
+    { name: "Đăng xuất", href: "#" },
+  ];
+
+  const openLoginModal = useCallback(() => {
+    setIsLoginModalOpen(true);
+  }, []);
+
+  const closeLoginModal = useCallback(() => {
+    setIsLoginModalOpen(false);
+  }, []);
+
+  const openSignUpModal = useCallback(() => {
+    setIsSignUpModalOpen(true);
+  }, []);
+
+  const closeSignUpModal = useCallback(() => {
+    setIsSignUpModalOpen(false);
+  }, []);
+
 
   return (
     <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
@@ -166,13 +184,48 @@ export default function Header() {
           </Popover>
         </Popover.Group>
         <div className="hidden xl:flex xl:flex-1 xl:justify-end">
-          <a
-            onClick={openLoginModal}
-            href="#"
-            className="text-base font-semibold leading-6 text-gray-900"
-          >
-            Đăng nhập 
-          </a>
+          {false ? (
+            <Popover className="relative">
+              <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none">
+                Nghĩa
+                <ChevronDownIcon
+                  className="h-5 w-5 flex-none text-gray-400"
+                  aria-hidden="true"
+                />
+              </Popover.Button>
+
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-200"
+                enterFrom="opacity-0 translate-y-1"
+                enterTo="opacity-100 translate-y-0"
+                leave="transition ease-in duration-150"
+                leaveFrom="opacity-100 translate-y-0"
+                leaveTo="opacity-0 translate-y-1"
+              >
+                <Popover.Panel className="absolute right-0 z-10 mt-3 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  {userNavigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className="block px-4 py-2 text-md font-semibold text-gray-700 hover:bg-gray-100"
+                      // onClick={item.onClick}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </Popover.Panel>
+              </Transition>
+            </Popover>
+          ) : (
+            <a
+              onClick={openLoginModal}
+              href="#"
+              className="text-base font-semibold leading-6 text-gray-900"
+            >
+              Đăng nhập
+            </a>
+          )}
         </div>
       </nav>
       <Dialog
@@ -252,13 +305,48 @@ export default function Header() {
                 </a>
               </div>
               <div className="py-6">
-                <a
-                  onClick={openLoginModal}
-                  href="#"
-                  className="-mx-3 block rounded-xl px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Đăng nhập
-                </a>
+                {true? (
+                  <Popover className="relative">
+                    <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none">
+                      Nghĩa
+                      <ChevronDownIcon
+                        className="h-5 w-5 flex-none text-gray-400"
+                        aria-hidden="true"
+                      />
+                    </Popover.Button>
+
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-200"
+                      enterFrom="opacity-0 translate-y-1"
+                      enterTo="opacity-100 translate-y-0"
+                      leave="transition ease-in duration-150"
+                      leaveFrom="opacity-100 translate-y-0"
+                      leaveTo="opacity-0 translate-y-1"
+                    >
+                      <Popover.Panel className="absolute left-0 z-10 mt-3 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        {userNavigation.map((item) => (
+                          <Link
+                            key={item.name}
+                            to={item.href}
+                            className="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 "
+                            // onClick={item.onClick}
+                          >
+                            {item.name}
+                          </Link>
+                        ))}
+                      </Popover.Panel>
+                    </Transition>
+                  </Popover>
+                ) : (
+                  <a
+                    onClick={openLoginModal}
+                    href="#"
+                    className="text-base font-semibold leading-6 text-gray-900"
+                  >
+                    Đăng nhập
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -364,7 +452,7 @@ export default function Header() {
                           </div>
                           <button
                             type="submit"
-                            className="w-full text-gray-900 bg-primary hover:bg-primary-light :bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-xl text-sm px-5 py-2.5 text-center text-white"
+                            className="w-full  bg-primary hover:bg-primary-light :bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-xl text-sm px-5 py-2.5 text-center text-white"
                           >
                             Đăng nhập
                           </button>
