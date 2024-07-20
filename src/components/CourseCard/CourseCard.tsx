@@ -18,15 +18,14 @@ const CourseCard = () => {
               <div>
                 <h3 className="text-sm md:text-xl font-semibold">
                   <a href="">
-                    Flutter & Dart - The Complete Guide [2024 Edition]
+                    Kiến thức nhập môn IT
                   </a>
                 </h3>
               </div>
-              <p>Framework for building native iOS and Android apps</p>
+              <p>Các kiến thức cơ bản, nền móng của ngành IT</p>
               <div>
                 <span className="text-sm text-gray-400">
-                  Academind by Maximilian Schwarzmüller, Maximilian
-                  Schwarzmüller
+                  Nghĩa NĐ
                 </span>
               </div>
 
@@ -88,9 +87,9 @@ const CourseCard = () => {
 
               <div className="flex items-center gap-1">
                 <BsClock className="hidden sm:block" />
-                <span className="mr-4">30 hours</span>
+                <span className="mr-4">10 giờ học</span>
                 <BsBook className="hidden sm:block" />
-                <span>370 lessons</span>
+                <span>370 bài học</span>
               </div>
             </div>
           </div>
