@@ -1,6 +1,4 @@
-import React from "react";
 import { motion } from "framer-motion";
-
 import publicImg from "../../assets/public.avif";
 import BANNER_CONTENT from "../../constants/banner-content";
 import Colors from "../../config/colors";

@@ -5,7 +5,7 @@ import SidebarItem from "../components/SidebarItem/SidebarItem";
 import { LIST_TEST_ITEM } from "../constants/SidebarItem";
 import { PaginationNavPresentation } from "../components/Pagination/Pagination";
 
-export const CoursePage = () => {
+const CoursePage = () => {
   return (
     <>
       <Header />
@@ -41,3 +41,5 @@ export const CoursePage = () => {
     </>
   );
 };
+
+export default CoursePage;
