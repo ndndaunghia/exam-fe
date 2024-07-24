@@ -14,8 +14,16 @@ export interface User {
     username: string;
     password: string;
   }
+
+  export interface UserData {
+    username: string;
+    id: string;
+    token: string;
+    email: string;
+    fullname: string | null;
+    phone: string | null;
+  }
   
   export interface LoginResponse {
-    user: User;
-    token: string;
+    data: UserData;
   }

@@ -15,8 +15,9 @@ import {
   PhoneIcon,
   PlayCircleIcon,
 } from "@heroicons/react/20/solid";
-import { useAuth } from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
+import { login } from "../../services/auth/authSlice";
 const products = [
   {
     name: "Analytics",
@@ -60,9 +61,14 @@ function classNames(...classes: string[]) {
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+
+  const [loginForm, setLoginForm] = useState({ username: "", password: "" });
+
+  const dispatch = useAppDispatch();
+  const { isLoading, error } = useAppSelector((state) => state.auth);
+  let token = "";
 
   const userNavigation = [
     { name: "Trang cá nhân", href: "/profile" },
@@ -86,6 +92,30 @@ export default function Header() {
     setIsSignUpModalOpen(false);
   }, []);
 
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setLoginForm((prevForm) => ({
+      ...prevForm,
+      [name]: value,
+    }));
+  };
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const resultAction = await dispatch(login(loginForm));
+      if (login.fulfilled.match(resultAction)) {
+        token = resultAction.payload.data.token;
+        // Đăng nhập thành công
+        console.log("Login successful", resultAction.payload);
+      } else if (login.rejected.match(resultAction)) {
+        // Đăng nhập thất bại
+        console.error("Login failed", resultAction.payload);
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+    }
+  };
 
   return (
     <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
@@ -305,7 +335,7 @@ export default function Header() {
                 </a>
               </div>
               <div className="py-6">
-                {true? (
+                {true ? (
                   <Popover className="relative">
                     <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none">
                       Nghĩa
@@ -390,20 +420,30 @@ export default function Header() {
                   <div className="py-6 px-6 mx-auto xl:py-0">
                     <div className="w-full bg-white  md:mt-0 xl:p-0">
                       <div className="p-6 space-y-4 md:space-y-6 sm:p-4">
-                        <form className="space-y-4 md:space-y-6" action="#">
+                        {isLoading && (
+                          <div className="absolute inset-0 bg-gray-100 bg-opacity-50 flex items-center justify-center">
+                            <div className="rounded-md h-12 w-12 border-4 border-t-4 border-primary animate-spin" />
+                          </div>
+                        )}
+                        <form
+                          className="space-y-4 md:space-y-6"
+                          action="#"
+                          onSubmit={handleLogin}
+                        >
                           <div>
                             <label
-                              htmlFor="email"
+                              htmlFor="username"
                               className="block mb-2 text-sm font-medium  text-gray-900"
                             >
-                              Email
+                              Tên đăng nhập
                             </label>
                             <input
-                              type="email"
-                              name="email"
-                              id="email"
+                              type="username"
+                              name="username"
+                              id="username"
                               className="bg-gray-50 border border-gray-300  sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              placeholder="name@company.com"
+                              placeholder="nguyenvana"
+                              onChange={handleInputChange}
                               required
                             />
                           </div>
@@ -420,6 +460,7 @@ export default function Header() {
                               id="password"
                               placeholder="••••••••"
                               className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-400 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              onChange={handleInputChange}
                               required
                             />
                           </div>
@@ -431,7 +472,6 @@ export default function Header() {
                                   aria-describedby="remember"
                                   type="checkbox"
                                   className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                                  required
                                 />
                               </div>
                               <div className="ml-3 text-sm">
