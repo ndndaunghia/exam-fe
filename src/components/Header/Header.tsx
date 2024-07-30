@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 
 import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
 import {
@@ -17,7 +17,12 @@ import {
 } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
-import { login } from "../../services/auth/authSlice";
+
+import { useTheme } from "../../hooks/useTheme";
+import Cookies from "js-cookie";
+import { fetchUserData, loginUser } from "../../services/auth/authActions";
+import { logout } from "../../services/auth/authSlice";
+
 const products = [
   {
     name: "Analytics",
@@ -66,15 +71,20 @@ export default function Header() {
 
   const [loginForm, setLoginForm] = useState({ username: "", password: "" });
 
+  const [theme, setTheme] = useTheme();
+
   const dispatch = useAppDispatch();
-  const { isLoading, error } = useAppSelector((state) => state.auth);
-  let token = "";
+  const { isLoading, error, user } = useAppSelector((state) => state.auth);
 
   const userNavigation = [
     { name: "Trang cá nhân", href: "/profile" },
     { name: "Cài đặt", href: "/settings" },
     { name: "Đăng xuất", href: "#" },
   ];
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
 
   const openLoginModal = useCallback(() => {
     setIsLoginModalOpen(true);
@@ -103,22 +113,42 @@ export default function Header() {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const resultAction = await dispatch(login(loginForm));
-      if (login.fulfilled.match(resultAction)) {
-        token = resultAction.payload.data.token;
-        // Đăng nhập thành công
-        console.log("Login successful", resultAction.payload);
-      } else if (login.rejected.match(resultAction)) {
-        // Đăng nhập thất bại
-        console.error("Login failed", resultAction.payload);
+      const resultAction = await dispatch(loginUser(loginForm));
+
+      if (loginUser.fulfilled.match(resultAction)) {
+        localStorage.setItem("userId", resultAction.payload.data._id);
+        console.log("Login success:", resultAction.payload);
       }
+      closeLoginModal();
     } catch (err) {
       console.error("Login error:", err);
     }
   };
 
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      const fetchUser = async () => {
+        try {
+          const resultAction = await dispatch(fetchUserData(userId));
+          if (fetchUserData.fulfilled.match(resultAction)) {
+            // Successfully fetched user data
+            console.log("User data:", resultAction.payload);
+          } else {
+            // Handle errors
+            console.error("Failed to fetch user data:", resultAction.payload);
+          }
+        } catch (error) {
+          console.error("Error during fetchUserData:", error);
+        }
+      };
+
+      fetchUser();
+    }
+  }, [dispatch]);
+
   return (
-    <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+    <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50 dark:bg-dark">
       <nav
         className=" flex items-center justify-between p-4 xl:px-40"
         aria-label="Global"
@@ -146,26 +176,26 @@ export default function Header() {
         <Popover.Group className="hidden xl:flex xl:gap-x-12">
           <Link
             to="/list-test"
-            className="text-base font-semibold leading-6 text-gray-900"
+            className="text-base font-semibold leading-6 text-gray-900 dark:text-white"
           >
             Luyện thi
           </Link>
 
           <Link
             to="/course"
-            className="text-base font-semibold leading-6 text-gray-900"
+            className="text-base font-semibold leading-6 text-gray-900 dark:text-white"
           >
             Khóa học online
           </Link>
           <a
             href="#"
-            className="text-base font-semibold leading-6 text-gray-900"
+            className="text-base font-semibold leading-6 text-gray-900 dark:text-white"
           >
             Khóa học của tôi
           </a>
 
           <Popover className="relative">
-            <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none">
+            <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none dark:text-white">
               Tài liệu ôn thi
               <ChevronDownIcon
                 className="h-5 w-5 flex-none text-gray-400"
@@ -213,11 +243,35 @@ export default function Header() {
             </Transition>
           </Popover>
         </Popover.Group>
-        <div className="hidden xl:flex xl:flex-1 xl:justify-end">
-          {false ? (
+
+        <div className="hidden xl:flex xl:flex-1 xl:justify-end xl:items-center gap-4">
+          <button
+            className="h-12 w-12 rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+            onClick={toggleTheme}
+          >
+            <svg
+              className="fill-violet-700 hidden dark:block"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg
+              className="fill-yellow-500 block dark:hidden"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                fillRule="evenodd"
+                clipRule="evenodd"
+              ></path>
+            </svg>
+          </button>
+          {user ? (
             <Popover className="relative">
-              <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none">
-                Nghĩa
+              <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none dark:text-white">
+                {user.username}
                 <ChevronDownIcon
                   className="h-5 w-5 flex-none text-gray-400"
                   aria-hidden="true"
@@ -233,13 +287,15 @@ export default function Header() {
                 leaveFrom="opacity-100 translate-y-0"
                 leaveTo="opacity-0 translate-y-1"
               >
-                <Popover.Panel className="absolute right-0 z-10 mt-3 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Popover.Panel className="absolute right-0 z-10 mt-3 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-dark">
                   {userNavigation.map((item) => (
                     <Link
                       key={item.name}
                       to={item.href}
-                      className="block px-4 py-2 text-md font-semibold text-gray-700 hover:bg-gray-100"
-                      // onClick={item.onClick}
+                      className="block px-4 py-2 text-md font-semibold text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-800"
+                      {...(item.name === "Đăng xuất" && {
+                        onClick: () => dispatch(logout()),
+                      })}
                     >
                       {item.name}
                     </Link>
@@ -251,7 +307,7 @@ export default function Header() {
             <a
               onClick={openLoginModal}
               href="#"
-              className="text-base font-semibold leading-6 text-gray-900"
+              className="text-base font-semibold leading-6 text-gray-900 dark:text-white"
             >
               Đăng nhập
             </a>
@@ -335,7 +391,7 @@ export default function Header() {
                 </a>
               </div>
               <div className="py-6">
-                {true ? (
+                {false ? (
                   <Popover className="relative">
                     <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none">
                       Nghĩa

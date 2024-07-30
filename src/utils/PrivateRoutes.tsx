@@ -1,14 +1,11 @@
-// PrivateRoutes.tsx
-
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Navigate, Outlet } from 'react-router-dom';
-import { selectIsLoggedIn } from '../services/auth/authSlice';
+import React from "react";
+import { useAppSelector } from "../hooks/useRedux";
+import { Navigate, Outlet } from "react-router-dom";
 
 const PrivateRoutes: React.FC = () => {
-  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const { user } = useAppSelector((state) => state.auth);
 
-  return isLoggedIn ? <Outlet /> : <Navigate to="/" />;
+  return user ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default PrivateRoutes;

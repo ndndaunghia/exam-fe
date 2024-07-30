@@ -1,11 +1,13 @@
 import { BsBook, BsClock } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import { useTheme } from "../../hooks/useTheme";
 
 const CourseCard = () => {
+  const [theme] = useTheme();
   return (
     <>
       <Link to="/course-detail">
-        <div className="flex flex-col md:flex-row justify-between gap-4 pb-[22px] border-b-gray-400 border-white border-2 cursor-pointer">
+        <div className="flex flex-col md:flex-row justify-between gap-4 pb-[22px] border-b-gray-400 border-white border-2 cursor-pointer dark:border-dark dark:border-b-dark-light">
           <div className="flex gap-6">
             <div className="w-full md:w-60 h-40">
               <img
@@ -16,13 +18,13 @@ const CourseCard = () => {
             </div>
             <div className="flex flex-col gap-y-1 justify-between">
               <div>
-                <h3 className="text-sm md:text-xl font-semibold">
+                <h3 className="text-sm md:text-xl font-semibold dark:text-white">
                   <a href="">
                     Kiến thức nhập môn IT
                   </a>
                 </h3>
               </div>
-              <p>Các kiến thức cơ bản, nền móng của ngành IT</p>
+              <p className="text-black dark:text-white" >Các kiến thức cơ bản, nền móng của ngành IT</p>
               <div>
                 <span className="text-sm text-gray-400">
                   Nghĩa NĐ
@@ -86,15 +88,15 @@ const CourseCard = () => {
               </div>
 
               <div className="flex items-center gap-1">
-                <BsClock className="hidden sm:block" />
-                <span className="mr-4">10 giờ học</span>
-                <BsBook className="hidden sm:block" />
-                <span>370 bài học</span>
+                <BsClock className="hidden sm:block" color={theme === 'light' ? 'black' : 'white'} />
+                <span className="mr-4 dark:text-white">10 giờ học</span>
+                <BsBook className="hidden sm:block" color={theme === 'light' ? 'black' : 'white'}/>
+                <span className="dark:text-white">370 bài học</span>
               </div>
             </div>
           </div>
           <div className="flex flex-col md:justify-between items-end">
-            <h3>299.000đ</h3>
+            <h3 className="text-black dark:text-white">299.000đ</h3>
             <h3 className="line-through text-sm text-gray-400">499.000đ</h3>
           </div>
         </div>

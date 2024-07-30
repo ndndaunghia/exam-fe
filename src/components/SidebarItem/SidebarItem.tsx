@@ -10,7 +10,7 @@ const SidebarItem = (props: SidebarItemType) => {
   };
 
   return (
-    <div className="cursor-pointer p-4 border-t-gray-400 border-white border-2 transition ease-in-out delay-1500">
+    <div className="cursor-pointer p-4 border-t-gray-400 border-white border-2 transition ease-in-out delay-1500 dark:text-white dark:border-dark dark:border-t-dark-light">
       <div
         className="flex justify-between items-center select-none"
         onClick={handleOpenTab}

@@ -119,19 +119,19 @@ const CourseDetail: React.FC = () => {
     <div className="md:px-4 lg:px-8 xl:px-14 2xl:px-22 mt-12">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 px-2">
-          <Typography variant="h3" responsive className="text-black">
+          <Typography variant="h3" responsive className="text-black dark:text-white">
             {courseData.title}
           </Typography>
-          <Typography variant="p" responsive className="text-gray-600 my-4">
+          <Typography variant="p" responsive className="text-gray-600 my-4 dark:text-white">
             {courseData.description}
           </Typography>
           <div className="mt-10">
             <div>
-              <Typography variant="h4" responsive>
+              <Typography variant="h4" responsive className="dark:text-white">
                 Nội dung khóa học
               </Typography>
             </div>
-            <div className="flex justify-between my-2">
+            <div className="flex justify-between my-2 dark:text-white">
               <ul className="flex gap-2">
                 <li className="hidden lg:block">
                   <strong>{courseData.chapterCount}</strong> chương
@@ -187,7 +187,7 @@ const CourseDetail: React.FC = () => {
             ))}
           </div>
         </div>
-        <div className="md:col-span-1 px-2 flex justify-center">
+        <div className="md:col-span-1 px-2 flex justify-center dark:text-white">
           <div className="">
             <div className="rounded-xl">
               <img

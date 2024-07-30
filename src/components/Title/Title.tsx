@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 
 const Title = ({ title }: { title: string }) => {
   return (
-    <div className="my-6 px-2 sm:px-4 md:px-4 lg:px-4 xl:px-40 py-4 flex justify-between items-center bg-[#f5f5f5]">
+    <div className="my-6 px-2 sm:px-4 md:px-4 lg:px-4 xl:px-40 py-4 flex justify-between items-center bg-[#f5f5f5] dark:bg-dark-light">
       <div className="flex gap-4">
-        <Link to="/" className="text-lg italic">
+        <Link to="/" className="text-lg italic dark:text-white">
           Trang chủ
         </Link>
         <span>/</span>

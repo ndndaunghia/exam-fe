@@ -1,29 +1,33 @@
 export interface User {
-    id: string;
-    username: string;
-    email: string;
-  }
-  
-  export interface AuthState {
-    user: User | null;
-    isLoading: boolean;
-    error: string | null;
-  }
-  
-  export interface LoginCredentials {
-    username: string;
-    password: string;
-  }
+  _id: string;
+  username: string;
+  email: string;
+  fullName: string | null;
+  phone: string | null;
+  // userToken: string | null;
+}
 
-  export interface UserData {
-    username: string;
-    id: string;
-    token: string;
-    email: string;
-    fullname: string | null;
-    phone: string | null;
-  }
-  
-  export interface LoginResponse {
-    data: UserData;
-  }
+export interface AuthState {
+  user: User | null;
+  userToken: string | null;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export interface LoginCredentials {
+  username: string;
+  password: string;
+}
+
+export interface UserData {
+  _id: string;
+  username: string;
+  email: string;
+  fullName: string | null;
+  phone: string | null;
+  userToken: string;
+}
+
+export interface LoginResponse {
+  data: UserData;
+}

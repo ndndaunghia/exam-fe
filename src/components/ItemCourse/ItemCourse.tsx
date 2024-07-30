@@ -20,7 +20,7 @@ const ItemCourse: React.FC<ItemCourseProps> = ({
   iconColor = Colors.primaryColor,
   title,
   lessonCount,
-  backgroundColor = "#f5f5f5",
+  // backgroundColor = "#f5f5f5",
   hasBorderBottom = false,
   borderBottomColor = "#e0e0e0",
   isSubItemCourse = false,
@@ -28,18 +28,18 @@ const ItemCourse: React.FC<ItemCourseProps> = ({
 }) => {
   return (
     <div
-      className={`flex justify-between items-center px-6 py-4 rounded-md cursor-pointer select-none ${
+      className={`flex justify-between items-center px-6 py-4 rounded-md cursor-pointer select-none bg-[#f5f5f5] dark:bg-dark-light dark:text-white  ${
         hasBorderBottom ? "border-b" : ""
       }`}
       style={{
-        backgroundColor,
+        // backgroundColor,
         borderBottomColor: hasBorderBottom ? borderBottomColor : "transparent",
       }}
       onClick={onClick}  // Thêm sự kiện onClick
     >
       <div className="flex items-center justify-between gap-4">
         <Icon color={iconColor} />
-        <Typography variant="p" responsive className={`${!isSubItemCourse ? "text-black font-bold" : "text-gray-600"}`}>
+        <Typography variant="p" responsive className={`${!isSubItemCourse ? "text-black font-bold dark:text-white" : "text-gray-600 dark:text-white"}`}>
           {title}
         </Typography>
       </div>

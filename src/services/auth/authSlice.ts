@@ -1,25 +1,11 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { loginUser } from './authAPI';
-import { AuthState, LoginCredentials, LoginResponse } from './auth.type';
-import { RootState } from '../../app/store';
-
-export const login = createAsyncThunk<LoginResponse, LoginCredentials, { rejectValue: string }>(
-  'auth/login',
-  async (credentials, { rejectWithValue }) => {
-    try {
-      const response = await loginUser(credentials);
-      return response; // loginUser now directly returns LoginResponse
-    } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return rejectWithValue('An unknown error occurred');
-    }
-  }
-);
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { loginUser, registerUser, fetchUserData } from './authActions';
+import { AuthState, LoginResponse, UserData } from './auth.type';
+import Cookies from 'js-cookie';
 
 const initialState: AuthState = {
   user: null,
+  userToken: null,
   isLoading: false,
   error: null,
 };
@@ -30,27 +16,73 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.user = null;
+      state.userToken = null;
+      localStorage.removeItem('userId');
+      Cookies.remove('accessToken');
+      Cookies.remove('refreshToken');
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(login.pending, (state) => {
+      .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(login.fulfilled, (state, action: PayloadAction<LoginResponse>) => {
+      .addCase(registerUser.fulfilled, (state, action: PayloadAction<UserData>) => {
         state.isLoading = false;
-        state.user = action.payload.data;
+        state.user = {
+          _id: action.payload._id,
+          username: action.payload.username,
+          email: action.payload.email,
+          fullName: action.payload.fullName,
+          phone: action.payload.phone,
+        };
+        state.userToken = action.payload.userToken;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload ?? 'An unknown error occurred';
+      })
+      .addCase(loginUser.pending, (state) => {
+        state.isLoading = true;
         state.error = null;
       })
-      .addCase(login.rejected, (state, action) => {
+      .addCase(loginUser.fulfilled, (state, action: PayloadAction<LoginResponse>) => {
         state.isLoading = false;
-        state.error = action.payload ?? 'An error occurred';
+        state.user = {
+          _id: action.payload.data._id,
+          username: action.payload.data.username,
+          email: action.payload.data.email,
+          fullName: action.payload.data.fullName,
+          phone: action.payload.data.phone,
+        };
+        state.userToken = action.payload.data.userToken;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload ?? 'An unknown error occurred';
+      })
+      .addCase(fetchUserData.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserData.fulfilled, (state, action: PayloadAction<LoginResponse>) => {
+        state.isLoading = false;
+        state.user = {
+          _id: action.payload.data._id,
+          username: action.payload.data.username,
+          email: action.payload.data.email,
+          fullName: action.payload.data.fullName,
+          phone: action.payload.data.phone,
+        };
+        // state.userToken = action.payload.data.userToken;
+      })
+      .addCase(fetchUserData.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload ?? 'An unknown error occurred';
       });
   },
 });
 
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;
-export const selectIsLoggedIn = (state: RootState) => !!state.auth.user;
-export const selectCurrentUser = (state: RootState) => state.auth.user;
