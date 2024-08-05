@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { loginUser, registerUser, fetchUserData } from './authActions';
-import { AuthState, LoginResponse, UserData } from './auth.type';
+import { AuthState, LoginResponse, RegisterResponse, UserData } from './auth.type';
 import Cookies from 'js-cookie';
 
 const initialState: AuthState = {
@@ -28,16 +28,16 @@ const authSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state, action: PayloadAction<UserData>) => {
+      .addCase(registerUser.fulfilled, (state, action: PayloadAction<RegisterResponse>) => {
         state.isLoading = false;
         state.user = {
-          _id: action.payload._id,
-          username: action.payload.username,
-          email: action.payload.email,
-          fullName: action.payload.fullName,
-          phone: action.payload.phone,
+          _id: action.payload.data._id,
+          username: action.payload.data.username,
+          email: action.payload.data.email,
+          fullName: action.payload.data.fullName,
+          phone: action.payload.data.phone,
         };
-        state.userToken = action.payload.userToken;
+        state.userToken = action.payload.data.userToken;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;

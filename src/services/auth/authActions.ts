@@ -1,6 +1,12 @@
 import axios, { AxiosError } from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { LoginCredentials, LoginResponse, UserData } from "./auth.type";
+import {
+  LoginCredentials,
+  LoginResponse,
+  RegisterCredentials,
+  RegisterResponse,
+  UserData,
+} from "./auth.type";
 import Cookies from "js-cookie";
 
 const AUTH_URL = "http://localhost:8080/api/v1/user";
@@ -14,24 +20,56 @@ interface CustomError {
   message: string;
 }
 
+// export const registerUser = createAsyncThunk<
+//   UserData,
+//   { username: string; email: string; password: string },
+//   {
+//     rejectValue: string;
+//   }
+// >(
+//   "auth/register",
+//   async ({ username, email, password }, { rejectWithValue }) => {
+//     try {
+//       const config = {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       };
+//       const response = await axiosInstance.post<UserData>(
+//         `${AUTH_URL}/registerUser`,
+//         { username, email, password },
+//         config
+//       );
+//       return response.data;
+//     } catch (error) {
+//       const err = error as AxiosError<CustomError>;
+//       if (err.response && err.response.data.message) {
+//         return rejectWithValue(err.response.data.message);
+//       } else {
+//         return rejectWithValue(err.message || "An unknown error occurred");
+//       }
+//     }
+//   }
+// );
+
 export const registerUser = createAsyncThunk<
-  UserData,
-  { username: string; email: string; password: string },
+  RegisterResponse,
+  RegisterCredentials,
   {
     rejectValue: string;
   }
 >(
   "auth/register",
-  async ({ username, email, password }, { rejectWithValue }) => {
+  async (credentials: RegisterCredentials, { rejectWithValue }) => {
     try {
       const config = {
         headers: {
           "Content-Type": "application/json",
         },
       };
-      const response = await axiosInstance.post<UserData>(
+      const response = await axiosInstance.post<RegisterResponse>(
         `${AUTH_URL}/registerUser`,
-        { username, email, password },
+        credentials,
         config
       );
       return response.data;

@@ -19,9 +19,17 @@ import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 
 import { useTheme } from "../../hooks/useTheme";
-import Cookies from "js-cookie";
-import { fetchUserData, loginUser } from "../../services/auth/authActions";
+import {
+  fetchUserData,
+  loginUser,
+  registerUser,
+} from "../../services/auth/authActions";
 import { logout } from "../../services/auth/authSlice";
+import {
+  LoginCredentials,
+  RegisterCredentials,
+} from "../../services/auth/auth.type";
+import { useForm } from "react-hook-form";
 
 const products = [
   {
@@ -69,12 +77,25 @@ export default function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
 
-  const [loginForm, setLoginForm] = useState({ username: "", password: "" });
+  // const [loginForm, setLoginForm] = useState({ username: "", password: "" });
 
   const [theme, setTheme] = useTheme();
 
   const dispatch = useAppDispatch();
   const { isLoading, error, user } = useAppSelector((state) => state.auth);
+
+  const {
+    register: registerLogin,
+    handleSubmit: handleSubmitLogin,
+    formState: { errors: loginErrors },
+  } = useForm<LoginCredentials>();
+
+  const {
+    register: registerSignUp,
+    handleSubmit: handleSubmitSignUp,
+    formState: { errors: signUpErrors },
+    getValues,
+  } = useForm<RegisterCredentials>();
 
   const userNavigation = [
     { name: "Trang cá nhân", href: "/profile" },
@@ -102,28 +123,33 @@ export default function Header() {
     setIsSignUpModalOpen(false);
   }, []);
 
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
-    setLoginForm((prevForm) => ({
-      ...prevForm,
-      [name]: value,
-    }));
-  };
-
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onLoginSubmit = handleSubmitLogin(async (data) => {
     try {
-      const resultAction = await dispatch(loginUser(loginForm));
+      const resultAction = await dispatch(loginUser(data));
 
       if (loginUser.fulfilled.match(resultAction)) {
         localStorage.setItem("userId", resultAction.payload.data._id);
         console.log("Login success:", resultAction.payload);
+        closeLoginModal();
       }
-      closeLoginModal();
     } catch (err) {
       console.error("Login error:", err);
     }
-  };
+  });
+
+  const onSignUpSubmit = handleSubmitSignUp(async (data) => {
+    try {
+      const resultAction = await dispatch(registerUser(data));
+
+      if (registerUser.fulfilled.match(resultAction)) {
+        localStorage.setItem("userId", resultAction.payload.data._id);
+        console.log("Register success:", resultAction.payload);
+        closeSignUpModal();
+      }
+    } catch (err) {
+      console.error("Register error:", err);
+    }
+  });
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -484,7 +510,7 @@ export default function Header() {
                         <form
                           className="space-y-4 md:space-y-6"
                           action="#"
-                          onSubmit={handleLogin}
+                          onSubmit={onLoginSubmit}
                         >
                           <div>
                             <label
@@ -494,14 +520,22 @@ export default function Header() {
                               Tên đăng nhập
                             </label>
                             <input
-                              type="username"
-                              name="username"
+                              type="text"
                               id="username"
                               className="bg-gray-50 border border-gray-300  sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               placeholder="nguyenvana"
-                              onChange={handleInputChange}
-                              required
+                              {...registerLogin("username", {
+                                required: "Vui lòng nhập tên đăng nhập",
+                                pattern: {
+                                  value:
+                                    /^[A-Za-z][A-Za-z0-9_]{6,29}$/i,
+                                  message: "Tên đăng nhập không hợp lệ",
+                                },
+                              })}
                             />
+                            <p className="text-sm text-grey italic mt-2 text-red-400">
+                              {loginErrors?.username?.message}
+                            </p>
                           </div>
                           <div>
                             <label
@@ -512,13 +546,16 @@ export default function Header() {
                             </label>
                             <input
                               type="password"
-                              name="password"
                               id="password"
                               placeholder="••••••••"
                               className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-400 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              onChange={handleInputChange}
-                              required
+                              {...registerLogin("password", {
+                                required: "Vui lòng nhập mật khẩu",
+                              })}
                             />
+                            <p className="text-sm text-grey italic mt-2 text-red-400">
+                              {loginErrors?.password?.message}
+                            </p>
                           </div>
                           <div className="flex items-center justify-between">
                             <div className="flex items-start">
@@ -610,7 +647,11 @@ export default function Header() {
                   <div className="py-6 px-6 mx-auto xl:py-0">
                     <div className="w-full bg-white  md:mt-0 xl:p-0">
                       <div className="p-6 space-y-4 md:space-y-6 sm:p-4">
-                        <form className="space-y-4 md:space-y-6" action="#">
+                        <form
+                          className="space-y-4 md:space-y-6"
+                          action="#"
+                          onSubmit={onSignUpSubmit}
+                        >
                           <div>
                             <label
                               htmlFor="username"
@@ -620,13 +661,22 @@ export default function Header() {
                             </label>
                             <input
                               type="text"
-                              name="username"
                               id="username"
                               className="bg-gray-50 border border-gray-300  sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               placeholder="nguyen van a"
-                              required
+                              {...registerSignUp("username", {
+                                required: "Vui lòng nhập tên người dùng",
+                                pattern: {
+                                  value:
+                                    /^[A-Za-z][A-Za-z0-9_]{6,29}$/i,
+                                  message: "Tên đăng nhập không hợp lệ",
+                                },
+                              })}
                               autoFocus
                             />
+                            <p className="text-sm text-grey italic mt-2 text-red-400">
+                              {signUpErrors?.username?.message}
+                            </p>
                           </div>
                           <div>
                             <label
@@ -637,12 +687,21 @@ export default function Header() {
                             </label>
                             <input
                               type="email"
-                              name="email"
                               id="email"
                               className="bg-gray-50 border border-gray-300  sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               placeholder="nguyenvana@gmail.com"
-                              required
+                              {...registerSignUp("email", {
+                                required: "Vui lòng nhập email",
+                                pattern: {
+                                  value:
+                                    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                  message: "Email không hợp lệ",
+                                },
+                              })}
                             />
+                            <p className="text-sm text-grey italic mt-2 text-red-400">
+                              {signUpErrors?.email?.message}
+                            </p>
                           </div>
                           <div>
                             <label
@@ -653,12 +712,29 @@ export default function Header() {
                             </label>
                             <input
                               type="password"
-                              name="password"
                               id="password"
                               placeholder="••••••••"
                               className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-400 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              required
+                              {...registerSignUp("password", {
+                                required: "Vui lòng nhập mật khẩu",
+                                minLength: {
+                                  value: 6,
+                                  message: "Mật khẩu phải có ít nhất 6 ký tự",
+                                },
+                                validate: (value) => {
+                                  if (!/[A-Z]/.test(value))
+                                    return "Mật khẩu phải chứa ít nhất 1 ký tự hoa";
+                                  if (!/[!@#$&*]/.test(value))
+                                    return "Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt";
+                                  if (!/[0-9]/.test(value))
+                                    return "Mật khẩu phải chứa ít nhất 1 số";
+                                  return true;
+                                },
+                              })}
                             />
+                            <p className="text-sm text-grey italic mt-2 text-red-400">
+                              {signUpErrors?.password?.message}
+                            </p>
                           </div>
                           <div>
                             <label
@@ -669,12 +745,23 @@ export default function Header() {
                             </label>
                             <input
                               type="password"
-                              name="confirm-password"
-                              id="confirm-password"
+                              id="confirmPassword"
                               placeholder="••••••••"
                               className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-400 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              required
+                              {...registerSignUp("confirmPassword", {
+                                required: "Vui lòng nhập mật khẩu",
+                                validate: (value) => {
+                                  if (value === "")
+                                    return "Vui lòng xác nhận mật khẩu";
+                                  if (value !== getValues("password"))
+                                    return "Mật khẩu không trùng khớp";
+                                  return true;
+                                },
+                              })}
                             />
+                            <p className="text-sm text-grey italic mt-2 text-red-400">
+                              {signUpErrors?.confirmPassword?.message}
+                            </p>
                           </div>
                           <button
                             type="submit"

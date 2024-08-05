@@ -18,6 +18,10 @@ export interface LoginCredentials {
   username: string;
   password: string;
 }
+export interface RegisterCredentials extends LoginCredentials {
+  email: string;
+  confirmPassword: string | undefined;
+}
 
 export interface UserData {
   _id: string;
@@ -29,5 +33,9 @@ export interface UserData {
 }
 
 export interface LoginResponse {
+  data: UserData;
+}
+
+export interface RegisterResponse {
   data: UserData;
 }
