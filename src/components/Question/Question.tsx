@@ -24,7 +24,7 @@ const Question = (
       </div>
       <div className="flex flex-col flex-grow">
         <div>
-          <p>
+          <p className="dark:text-white">
             Cho hàm số <strong className="italic"> y = f(x)</strong> có bảng
             biến thiên như hình bên. Hàm số nghịch biến trên khoảng nào dưới
             đây?
@@ -43,11 +43,11 @@ const Question = (
               type="radio"
               name={id}
               id={`question-${questionIndex}-${option}`}
-              className="accent-[#517C96]"
+              className="accent-[#517C96] dark:text-white"
               checked={currentAnswer?.selectedOption === option}
               onChange={() => handleSelectAnswer(questionIndex, option)}
             />
-            <label htmlFor={`question-${questionIndex}-${option}`}>{option.toUpperCase()}. Option text</label>
+            <label className="dark:text-white" htmlFor={`question-${questionIndex}-${option}`}>{option.toUpperCase()}. Option text</label>
           </div>
         ))}
         </div>

@@ -1,6 +1,4 @@
-import React from "react";
 import { motion } from "framer-motion";
-
 import publicImg from "../../assets/public.avif";
 import BANNER_CONTENT from "../../constants/banner-content";
 import Colors from "../../config/colors";
@@ -15,16 +13,16 @@ const BannerCard = () => {
         viewport={{ once: true }}
         transition={{ duration: 1.5, ease: "linear" }}
       >
-        <section className="grid grid-cols-1 md:grid-cols-3 py-32 gap-10 px-8">
+        <section className="grid grid-cols-1 md:grid-cols-3 py-32 gap-10 px-8 dark:bg-dark">
           {BANNER_CONTENT.map((item, index: number) => {
             return (
               <article
-                className="rounded-2xl shadow-2xl col-span-1 p-10 md:block flex flex-col items-center"
+                className="rounded-2xl shadow-2xl col-span-1 p-10 md:block flex flex-col items-center dark:shadow-twe-inner"
                 key={index}
               >
                 <div className="flex flex-col justify-center items-center">
                   {item.icon}
-                  <h4 className="font-bold text-lg text-left md:mt-8 mt-0">
+                  <h4 className="font-bold text-lg text-left md:mt-8 mt-0 dark:text-white">
                     {item.title}
                   </h4>
                 </div>
@@ -37,7 +35,7 @@ const BannerCard = () => {
         </section>
       </motion.section>
 
-      <section className="py-24 bg-[#f5f6fa] overflow-hidden px-8">
+      <section className="py-24 bg-[#f5f6fa] overflow-hidden px-8 dark:bg-dark-light">
         <div className="md:gap-8 md:flex md:flex-row md:justify-center md:items-center sm:flex sm:flex-col sm:justify-center sm:items-center">
           <motion.article
             className="mx-auto"
@@ -61,7 +59,7 @@ const BannerCard = () => {
               ease: "linear",
             }}
           >
-            <h2 className="font-bold text-2xl mt-1 text-center md:text-3xl md:leading-normal md:mt-0 md:text-left">
+            <h2 className="font-bold text-2xl mt-1 text-center md:text-3xl md:leading-normal md:mt-0 md:text-left dark:text-white">
               {" "}
               Bắt đầu{" "}
               <span className={`text-[${Colors.primaryColor}]`}>
@@ -69,8 +67,8 @@ const BannerCard = () => {
               </span>
               <br />
               <span>dễ dàng</span>
-            </h2>
-            <p className="md:block hidden md:text-left sm:text-center mt-3 text-xl">
+            </h2> 
+            <p className="md:block hidden md:text-left sm:text-center mt-3 text-xl dark:text-white">
               Các khoá học của Sky được biên soạn và trình bày một cách khoa học
               nhất
             </p>

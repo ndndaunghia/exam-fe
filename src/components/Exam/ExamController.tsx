@@ -9,7 +9,7 @@ const ExamController: React.FC<ExamControllerProps> = ({ handleScrollToQuestion 
     const arr = new Array(10).fill(0);
     
     return (
-        <div className="">
+        <div className="dark:text-white">
             <div className="mb-4">
                 <h2>Thời gian làm bài</h2>
                 <span className="text-lg font-bold">39:25</span>

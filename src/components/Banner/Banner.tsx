@@ -16,10 +16,10 @@ const Banner = () => {
 
   const { handleNavigate } = useNavigateCustom();
   return (
-    <section className="pt-20">
+    <section className="pt-20 dark:bg-dark">
       <div className="grid max-w-screen-xl md:px-24 pt-20 pb-8 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:pt-8">
         <div className="place-self-center lg:col-span-8 sm:col-span-12 lg:mr-auto">
-          <p className="max-w-2xl mb-4 text-4xl text-center font-semibold leading-none tracking-tight md:text-5xl xl:text-4xl">
+          <p className="max-w-2xl mb-4 text-4xl text-center font-semibold leading-none tracking-tight md:text-5xl xl:text-4xl dark:text-white">
             Nền tảng
           </p>
 
@@ -27,7 +27,7 @@ const Banner = () => {
             Học & Luyện Thi
           </p>
 
-          <p className="max-w-2xl mb-4 text-4xl font-semibold text-center leading-none tracking-tight md:text-5xl xl:text-4xl">
+          <p className="max-w-2xl mb-4 text-4xl font-semibold text-center leading-none tracking-tight md:text-5xl xl:text-4xl dark:text-white">
             Thông minh
           </p>
 

@@ -1,4 +1,3 @@
-import React from "react";
 import animationError from "../assets/animation/404.json";
 import Lottie from "react-lottie";
 import Button from "../components/Button/Button";

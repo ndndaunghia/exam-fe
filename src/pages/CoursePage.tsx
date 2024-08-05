@@ -5,13 +5,13 @@ import SidebarItem from "../components/SidebarItem/SidebarItem";
 import { LIST_TEST_ITEM } from "../constants/SidebarItem";
 import { PaginationNavPresentation } from "../components/Pagination/Pagination";
 
-export const CoursePage = () => {
+const CoursePage = () => {
   return (
     <>
       <Header />
-      <div className="pt-16 "></div>
+      <div className="pt-16 dark:bg-dark"></div>
       <Title title="Khóa học online" />
-      <div className="md:px-4 lg:px-8 xl:px-16 2xl:px-0">
+      <div className="md:px-4 lg:px-8 xl:px-16 2xl:px-0 dark:bg-dark">
         <div className="grid grid-cols-12 px-4 gap-6">
           <div className="col-span-12 sm:col-span-12 md:col-span-12 lg:col-span-2 text-center h-fit top-24">
             <div className="flex flex-col">
@@ -41,3 +41,5 @@ export const CoursePage = () => {
     </>
   );
 };
+
+export default CoursePage;

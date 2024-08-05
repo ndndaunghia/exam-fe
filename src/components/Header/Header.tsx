@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 
 import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
 import {
@@ -15,8 +15,24 @@ import {
   PhoneIcon,
   PlayCircleIcon,
 } from "@heroicons/react/20/solid";
-import { useAuth } from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
+
+import { useTheme } from "../../hooks/useTheme";
+import {
+  fetchUserData,
+  loginUser,
+  registerUser,
+} from "../../services/auth/authActions";
+import { logout } from "../../services/auth/authSlice";
+import {
+  LoginCredentials,
+  RegisterCredentials,
+} from "../../services/auth/auth.type";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT_SUCCESS, REGISTER_FAIL, REGISTER_SUCCESS } from "../../utils/constants";
+
 const products = [
   {
     name: "Analytics",
@@ -59,18 +75,113 @@ function classNames(...classes: string[]) {
 }
 
 export default function Header() {
-  const {
-    isLoginModalOpen,
-    openLoginModal,
-    closeLoginModal,
-    isSignUpModalOpen,
-    openSignUpModal,
-    closeSignUpModal,
-  } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+
+  // const [loginForm, setLoginForm] = useState({ username: "", password: "" });
+
+  const [theme, setTheme] = useTheme();
+
+  const dispatch = useAppDispatch();
+  const { isLoading, error, user } = useAppSelector((state) => state.auth);
+
+  const {
+    register: registerLogin,
+    handleSubmit: handleSubmitLogin,
+    formState: { errors: loginErrors },
+  } = useForm<LoginCredentials>();
+
+  const {
+    register: registerSignUp,
+    handleSubmit: handleSubmitSignUp,
+    formState: { errors: signUpErrors },
+    getValues,
+  } = useForm<RegisterCredentials>();
+
+  const userNavigation = [
+    { name: "Trang cá nhân", href: "/profile" },
+    { name: "Cài đặt", href: "/settings" },
+    { name: "Đăng xuất", href: "#" },
+  ];
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+  }, [setTheme]);
+
+  const openLoginModal = useCallback(() => {
+    setIsLoginModalOpen(true);
+  }, []);
+
+  const closeLoginModal = useCallback(() => {
+    setIsLoginModalOpen(false);
+  }, []);
+
+  const openSignUpModal = useCallback(() => {
+    setIsSignUpModalOpen(true);
+  }, []);
+
+  const closeSignUpModal = useCallback(() => {
+    setIsSignUpModalOpen(false);
+  }, []);
+
+  const onLoginSubmit = handleSubmitLogin(async (data) => {
+    try {
+      const resultAction = await dispatch(loginUser(data));
+
+      if (loginUser.fulfilled.match(resultAction)) {
+        localStorage.setItem("userId", resultAction.payload.data._id);
+        console.log("Login success:", resultAction.payload);
+        closeLoginModal();
+        toast.success(LOGIN_SUCCESS);
+      }
+    } catch (err) {
+      toast.error(LOGIN_FAIL);
+      console.error("Login error:", err);
+    }
+  });
+
+  const onSignUpSubmit = handleSubmitSignUp(async (data) => {
+    try {
+      const resultAction = await dispatch(registerUser(data));
+
+      if (registerUser.fulfilled.match(resultAction)) {
+        // localStorage.setItem("userId", resultAction.payload.data._id);
+        console.log("Register success:", resultAction.payload);
+        closeSignUpModal();
+        toast.success(REGISTER_SUCCESS);
+        openLoginModal();
+      }
+    } catch (err) {
+      toast.error(REGISTER_FAIL);
+      console.error("Register error:", err);
+    }
+  });
+
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      const fetchUser = async () => {
+        try {
+          const resultAction = await dispatch(fetchUserData(userId));
+          if (fetchUserData.fulfilled.match(resultAction)) {
+            // Successfully fetched user data
+            console.log("User data:", resultAction.payload);
+          } else {
+            // Handle errors
+            console.error("Failed to fetch user data:", resultAction.payload);
+          }
+        } catch (error) {
+          console.error("Error during fetchUserData:", error);
+        }
+      };
+
+      fetchUser();
+    }
+  }, [dispatch]);
 
   return (
-    <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+    <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50 dark:bg-dark">
       <nav
         className=" flex items-center justify-between p-4 xl:px-40"
         aria-label="Global"
@@ -98,26 +209,26 @@ export default function Header() {
         <Popover.Group className="hidden xl:flex xl:gap-x-12">
           <Link
             to="/list-test"
-            className="text-base font-semibold leading-6 text-gray-900"
+            className="text-base font-semibold leading-6 text-gray-900 dark:text-white"
           >
             Luyện thi
           </Link>
 
           <Link
             to="/course"
-            className="text-base font-semibold leading-6 text-gray-900"
+            className="text-base font-semibold leading-6 text-gray-900 dark:text-white"
           >
             Khóa học online
           </Link>
           <a
             href="#"
-            className="text-base font-semibold leading-6 text-gray-900"
+            className="text-base font-semibold leading-6 text-gray-900 dark:text-white"
           >
             Khóa học của tôi
           </a>
 
           <Popover className="relative">
-            <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none">
+            <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none dark:text-white">
               Tài liệu ôn thi
               <ChevronDownIcon
                 className="h-5 w-5 flex-none text-gray-400"
@@ -165,14 +276,78 @@ export default function Header() {
             </Transition>
           </Popover>
         </Popover.Group>
-        <div className="hidden xl:flex xl:flex-1 xl:justify-end">
-          <a
-            onClick={openLoginModal}
-            href="#"
-            className="text-base font-semibold leading-6 text-gray-900"
+
+        <div className="hidden xl:flex xl:flex-1 xl:justify-end xl:items-center gap-4">
+          <button
+            className="h-12 w-12 rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+            onClick={toggleTheme}
           >
-            Đăng nhập 
-          </a>
+            <svg
+              className="fill-violet-700 hidden dark:block"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+            <svg
+              className="fill-yellow-500 block dark:hidden"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                fillRule="evenodd"
+                clipRule="evenodd"
+              ></path>
+            </svg>
+          </button>
+          {user ? (
+            <Popover className="relative">
+              <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none dark:text-white">
+                {user.username}
+                <ChevronDownIcon
+                  className="h-5 w-5 flex-none text-gray-400"
+                  aria-hidden="true"
+                />
+              </Popover.Button>
+
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-200"
+                enterFrom="opacity-0 translate-y-1"
+                enterTo="opacity-100 translate-y-0"
+                leave="transition ease-in duration-150"
+                leaveFrom="opacity-100 translate-y-0"
+                leaveTo="opacity-0 translate-y-1"
+              >
+                <Popover.Panel className="absolute right-0 z-10 mt-3 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-dark">
+                  {userNavigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className="block px-4 py-2 text-md font-semibold text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-800"
+                      {...(item.name === "Đăng xuất" && {
+                        onClick: () => {
+                          dispatch(logout());
+                          toast.success(LOGOUT_SUCCESS);
+                        }
+                      })}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </Popover.Panel>
+              </Transition>
+            </Popover>
+          ) : (
+            <a
+              onClick={openLoginModal}
+              href="#"
+              className="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+            >
+              Đăng nhập
+            </a>
+          )}
         </div>
       </nav>
       <Dialog
@@ -252,13 +427,48 @@ export default function Header() {
                 </a>
               </div>
               <div className="py-6">
-                <a
-                  onClick={openLoginModal}
-                  href="#"
-                  className="-mx-3 block rounded-xl px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Đăng nhập
-                </a>
+                {false ? (
+                  <Popover className="relative">
+                    <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none">
+                      Nghĩa
+                      <ChevronDownIcon
+                        className="h-5 w-5 flex-none text-gray-400"
+                        aria-hidden="true"
+                      />
+                    </Popover.Button>
+
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-200"
+                      enterFrom="opacity-0 translate-y-1"
+                      enterTo="opacity-100 translate-y-0"
+                      leave="transition ease-in duration-150"
+                      leaveFrom="opacity-100 translate-y-0"
+                      leaveTo="opacity-0 translate-y-1"
+                    >
+                      <Popover.Panel className="absolute left-0 z-10 mt-3 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        {userNavigation.map((item) => (
+                          <Link
+                            key={item.name}
+                            to={item.href}
+                            className="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100 "
+                            // onClick={item.onClick}
+                          >
+                            {item.name}
+                          </Link>
+                        ))}
+                      </Popover.Panel>
+                    </Transition>
+                  </Popover>
+                ) : (
+                  <a
+                    onClick={openLoginModal}
+                    href="#"
+                    className="text-base font-semibold leading-6 text-gray-900"
+                  >
+                    Đăng nhập
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -302,22 +512,40 @@ export default function Header() {
                   <div className="py-6 px-6 mx-auto xl:py-0">
                     <div className="w-full bg-white  md:mt-0 xl:p-0">
                       <div className="p-6 space-y-4 md:space-y-6 sm:p-4">
-                        <form className="space-y-4 md:space-y-6" action="#">
+                        {isLoading && (
+                          <div className="absolute inset-0 bg-gray-100 bg-opacity-50 flex items-center justify-center">
+                            <div className="rounded-md h-12 w-12 border-4 border-t-4 border-primary animate-spin" />
+                          </div>
+                        )}
+                        <form
+                          className="space-y-4 md:space-y-6"
+                          action="#"
+                          onSubmit={onLoginSubmit}
+                        >
                           <div>
                             <label
-                              htmlFor="email"
+                              htmlFor="username"
                               className="block mb-2 text-sm font-medium  text-gray-900"
                             >
-                              Email
+                              Tên đăng nhập
                             </label>
                             <input
-                              type="email"
-                              name="email"
-                              id="email"
+                              type="text"
+                              id="username"
                               className="bg-gray-50 border border-gray-300  sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              placeholder="name@company.com"
-                              required
+                              placeholder="nguyenvana"
+                              {...registerLogin("username", {
+                                required: "Vui lòng nhập tên đăng nhập",
+                                pattern: {
+                                  value:
+                                    /^[A-Za-z][A-Za-z0-9_]{6,29}$/i,
+                                  message: "Tên đăng nhập không hợp lệ",
+                                },
+                              })}
                             />
+                            <p className="text-sm text-grey italic mt-2 text-red-400">
+                              {loginErrors?.username?.message}
+                            </p>
                           </div>
                           <div>
                             <label
@@ -328,12 +556,16 @@ export default function Header() {
                             </label>
                             <input
                               type="password"
-                              name="password"
                               id="password"
                               placeholder="••••••••"
                               className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-400 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              required
+                              {...registerLogin("password", {
+                                required: "Vui lòng nhập mật khẩu",
+                              })}
                             />
+                            <p className="text-sm text-grey italic mt-2 text-red-400">
+                              {loginErrors?.password?.message}
+                            </p>
                           </div>
                           <div className="flex items-center justify-between">
                             <div className="flex items-start">
@@ -343,7 +575,6 @@ export default function Header() {
                                   aria-describedby="remember"
                                   type="checkbox"
                                   className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                                  required
                                 />
                               </div>
                               <div className="ml-3 text-sm">
@@ -364,7 +595,7 @@ export default function Header() {
                           </div>
                           <button
                             type="submit"
-                            className="w-full text-gray-900 bg-primary hover:bg-primary-light :bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-xl text-sm px-5 py-2.5 text-center text-white"
+                            className="w-full  bg-primary hover:bg-primary-light :bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-xl text-sm px-5 py-2.5 text-center text-white"
                           >
                             Đăng nhập
                           </button>
@@ -426,7 +657,11 @@ export default function Header() {
                   <div className="py-6 px-6 mx-auto xl:py-0">
                     <div className="w-full bg-white  md:mt-0 xl:p-0">
                       <div className="p-6 space-y-4 md:space-y-6 sm:p-4">
-                        <form className="space-y-4 md:space-y-6" action="#">
+                        <form
+                          className="space-y-4 md:space-y-6"
+                          action="#"
+                          onSubmit={onSignUpSubmit}
+                        >
                           <div>
                             <label
                               htmlFor="username"
@@ -436,13 +671,22 @@ export default function Header() {
                             </label>
                             <input
                               type="text"
-                              name="username"
                               id="username"
                               className="bg-gray-50 border border-gray-300  sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               placeholder="nguyen van a"
-                              required
+                              {...registerSignUp("username", {
+                                required: "Vui lòng nhập tên người dùng",
+                                pattern: {
+                                  value:
+                                    /^[A-Za-z][A-Za-z0-9_]{6,29}$/i,
+                                  message: "Tên đăng nhập không hợp lệ",
+                                },
+                              })}
                               autoFocus
                             />
+                            <p className="text-sm text-grey italic mt-2 text-red-400">
+                              {signUpErrors?.username?.message}
+                            </p>
                           </div>
                           <div>
                             <label
@@ -453,12 +697,21 @@ export default function Header() {
                             </label>
                             <input
                               type="email"
-                              name="email"
                               id="email"
                               className="bg-gray-50 border border-gray-300  sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               placeholder="nguyenvana@gmail.com"
-                              required
+                              {...registerSignUp("email", {
+                                required: "Vui lòng nhập email",
+                                pattern: {
+                                  value:
+                                    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                  message: "Email không hợp lệ",
+                                },
+                              })}
                             />
+                            <p className="text-sm text-grey italic mt-2 text-red-400">
+                              {signUpErrors?.email?.message}
+                            </p>
                           </div>
                           <div>
                             <label
@@ -469,12 +722,29 @@ export default function Header() {
                             </label>
                             <input
                               type="password"
-                              name="password"
                               id="password"
                               placeholder="••••••••"
                               className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-400 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              required
+                              {...registerSignUp("password", {
+                                required: "Vui lòng nhập mật khẩu",
+                                minLength: {
+                                  value: 6,
+                                  message: "Mật khẩu phải có ít nhất 6 ký tự",
+                                },
+                                validate: (value) => {
+                                  if (!/[A-Z]/.test(value))
+                                    return "Mật khẩu phải chứa ít nhất 1 ký tự hoa";
+                                  if (!/[!@#$&*]/.test(value))
+                                    return "Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt";
+                                  if (!/[0-9]/.test(value))
+                                    return "Mật khẩu phải chứa ít nhất 1 số";
+                                  return true;
+                                },
+                              })}
                             />
+                            <p className="text-sm text-grey italic mt-2 text-red-400">
+                              {signUpErrors?.password?.message}
+                            </p>
                           </div>
                           <div>
                             <label
@@ -485,12 +755,23 @@ export default function Header() {
                             </label>
                             <input
                               type="password"
-                              name="confirm-password"
-                              id="confirm-password"
+                              id="confirmPassword"
                               placeholder="••••••••"
                               className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-400 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              required
+                              {...registerSignUp("confirmPassword", {
+                                required: "Vui lòng nhập mật khẩu",
+                                validate: (value) => {
+                                  if (value === "")
+                                    return "Vui lòng xác nhận mật khẩu";
+                                  if (value !== getValues("password"))
+                                    return "Mật khẩu không trùng khớp";
+                                  return true;
+                                },
+                              })}
                             />
+                            <p className="text-sm text-grey italic mt-2 text-red-400">
+                              {signUpErrors?.confirmPassword?.message}
+                            </p>
                           </div>
                           <button
                             type="submit"
