@@ -30,14 +30,14 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action: PayloadAction<RegisterResponse>) => {
         state.isLoading = false;
-        state.user = {
-          _id: action.payload.data._id,
-          username: action.payload.data.username,
-          email: action.payload.data.email,
-          fullName: action.payload.data.fullName,
-          phone: action.payload.data.phone,
-        };
-        state.userToken = action.payload.data.userToken;
+        // state.user = {
+        //   _id: action?.payload?.data?._id,
+        //   username: action?.payload?.data?.username,
+        //   email: action?.payload?.data?.email,
+        //   fullName: action?.payload?.data?.fullName,
+        //   phone: action?.payload?.data?.phone,
+        // };
+        // state.userToken = action?.payload?.data?.userToken;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;

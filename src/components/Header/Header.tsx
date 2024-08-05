@@ -30,6 +30,8 @@ import {
   RegisterCredentials,
 } from "../../services/auth/auth.type";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT_SUCCESS, REGISTER_FAIL, REGISTER_SUCCESS } from "../../utils/constants";
 
 const products = [
   {
@@ -103,9 +105,9 @@ export default function Header() {
     { name: "Đăng xuất", href: "#" },
   ];
 
-  const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
-  };
+  const toggleTheme = useCallback(() => {
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+  }, [setTheme]);
 
   const openLoginModal = useCallback(() => {
     setIsLoginModalOpen(true);
@@ -131,8 +133,10 @@ export default function Header() {
         localStorage.setItem("userId", resultAction.payload.data._id);
         console.log("Login success:", resultAction.payload);
         closeLoginModal();
+        toast.success(LOGIN_SUCCESS);
       }
     } catch (err) {
+      toast.error(LOGIN_FAIL);
       console.error("Login error:", err);
     }
   });
@@ -142,11 +146,14 @@ export default function Header() {
       const resultAction = await dispatch(registerUser(data));
 
       if (registerUser.fulfilled.match(resultAction)) {
-        localStorage.setItem("userId", resultAction.payload.data._id);
+        // localStorage.setItem("userId", resultAction.payload.data._id);
         console.log("Register success:", resultAction.payload);
         closeSignUpModal();
+        toast.success(REGISTER_SUCCESS);
+        openLoginModal();
       }
     } catch (err) {
+      toast.error(REGISTER_FAIL);
       console.error("Register error:", err);
     }
   });
@@ -320,7 +327,10 @@ export default function Header() {
                       to={item.href}
                       className="block px-4 py-2 text-md font-semibold text-gray-700 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-800"
                       {...(item.name === "Đăng xuất" && {
-                        onClick: () => dispatch(logout()),
+                        onClick: () => {
+                          dispatch(logout());
+                          toast.success(LOGOUT_SUCCESS);
+                        }
                       })}
                     >
                       {item.name}

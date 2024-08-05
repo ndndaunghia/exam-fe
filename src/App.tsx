@@ -1,9 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { lazy, Suspense, useEffect } from "react";
-import PrivateRoutes from "./utils/PrivateRoutes";
+import { lazy, Suspense } from "react";
+import PrivateRoutes from "./routes/PrivateRoutes";
 import Loading from "./components/Loading";
-import { useDispatch } from "react-redux";
-import { useAppDispatch } from "./hooks/useRedux";
 
 const ExamPage = lazy(() => import("./pages/ExamPage"));
 const ListTestPage = lazy(() => import("./pages/ListTestPage"));
@@ -13,8 +11,6 @@ const CourseDetailPage = lazy(() => import("./pages/CourseDetailPage"));
 const ErrorPage = lazy(() => import("./pages/ErrorPage"));
 
 function App() {
-
-  const dispatch = useAppDispatch();
 
   return (
       <Router>
