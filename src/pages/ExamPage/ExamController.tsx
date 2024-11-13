@@ -1,5 +1,5 @@
 import React from "react";
-import QuestionIndex from "../Question/QuestionIndex";
+import QuestionIndex from "../../components/Question/QuestionIndex";
 
 interface ExamControllerProps {
     handleScrollToQuestion: (index: number) => void;

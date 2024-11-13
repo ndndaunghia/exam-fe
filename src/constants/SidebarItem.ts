@@ -3,7 +3,7 @@ import SidebarItemType  from "../components/SidebarItem/SidebarItem.type";
 export const YEAR_ITEM: SidebarItemType = {
   type: "year",
   title: "Năm",
-  labels: ["2021", "2022", "2023", "2024"],
+  labels: ["2024", "2023", "2022", "2021"],
 };
 
 export const SUBJECT_ITEM: SidebarItemType = {

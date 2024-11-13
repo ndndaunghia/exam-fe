@@ -1,88 +1,90 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { loginUser, registerUser, fetchUserData } from './authActions';
-import { AuthState, LoginResponse, RegisterResponse, UserData } from './auth.type';
-import Cookies from 'js-cookie';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { login, register } from "./authAPI";
+import { AuthRequest, AuthState } from "./auth.type";
 
 const initialState: AuthState = {
   user: null,
-  userToken: null,
-  isLoading: false,
+  token: localStorage.getItem("token"),
+  loading: false,
   error: null,
 };
 
+export const loginAsync = createAsyncThunk(
+  "auth/login",
+  async (authRequest: AuthRequest, { rejectWithValue }) => {
+    try {
+      const response = await login(authRequest);
+      const data = response.data;
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.user.id.toString());
+
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Đăng nhập thất bại"
+      );
+    }
+  }
+);
+
+export const registerAsync = createAsyncThunk(
+  "auth/register",
+  async (authRequest: AuthRequest, { rejectWithValue }) => {
+    try {
+      const response = await register(authRequest);
+      const data = response.data;
+
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Đăng ký thất bại"
+      );
+    }
+  }
+);
+
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     logout: (state) => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
       state.user = null;
-      state.userToken = null;
-      localStorage.removeItem('userId');
-      Cookies.remove('accessToken');
-      Cookies.remove('refreshToken');
+      state.token = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(registerUser.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
+      .addCase(loginAsync.pending, (state) => {
+        state.loading = true;
       })
-      .addCase(registerUser.fulfilled, (state, action: PayloadAction<RegisterResponse>) => {
-        state.isLoading = false;
-        // state.user = {
-        //   _id: action?.payload?.data?._id,
-        //   username: action?.payload?.data?.username,
-        //   email: action?.payload?.data?.email,
-        //   fullName: action?.payload?.data?.fullName,
-        //   phone: action?.payload?.data?.phone,
-        // };
-        // state.userToken = action?.payload?.data?.userToken;
+      .addCase(loginAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
       })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload ?? 'An unknown error occurred';
+      .addCase(loginAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
-      .addCase(loginUser.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
+      .addCase(registerAsync.pending, (state) => {
+        state.loading = true;
       })
-      .addCase(loginUser.fulfilled, (state, action: PayloadAction<LoginResponse>) => {
-        state.isLoading = false;
-        state.user = {
-          _id: action.payload.data._id,
-          username: action.payload.data.username,
-          email: action.payload.data.email,
-          fullName: action.payload.data.fullName,
-          phone: action.payload.data.phone,
-        };
-        state.userToken = action.payload.data.userToken;
+      .addCase(registerAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // state.user = action.payload.user;
+        state.token = null;
       })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload ?? 'An unknown error occurred';
-      })
-      .addCase(fetchUserData.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchUserData.fulfilled, (state, action: PayloadAction<LoginResponse>) => {
-        state.isLoading = false;
-        state.user = {
-          _id: action.payload.data._id,
-          username: action.payload.data.username,
-          email: action.payload.data.email,
-          fullName: action.payload.data.fullName,
-          phone: action.payload.data.phone,
-        };
-        // state.userToken = action.payload.data.userToken;
-      })
-      .addCase(fetchUserData.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload ?? 'An unknown error occurred';
+      .addCase(registerAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
+
 export const { logout } = authSlice.actions;
+
 export default authSlice.reducer;

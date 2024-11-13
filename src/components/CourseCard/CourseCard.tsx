@@ -1,33 +1,50 @@
 import { BsBook, BsClock } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { useTheme } from "../../hooks/useTheme";
+import { Course } from "../../services/courses/course.type";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
+import { useEffect } from "react";
+import { getDetailAuthorAsync } from "../../services/authors/authorSlice";
 
-const CourseCard = () => {
+const CourseCard = (props: Course) => {
   const [theme] = useTheme();
+  const dispatch = useAppDispatch();
+  const { authors } = useAppSelector((state) => state.author);
+
+  useEffect(() => {
+    dispatch(getDetailAuthorAsync(parseInt(props.author_id)));
+  }, [dispatch, props.author_id]);
+
+  console.log(authors);
+
   return (
     <>
       <Link to="/course-detail">
         <div className="flex flex-col md:flex-row justify-between gap-4 pb-[22px] border-b-gray-400 border-white border-2 cursor-pointer dark:border-dark dark:border-b-dark-light">
           <div className="flex gap-6">
             <div className="w-full md:w-60 h-40">
-              <img
-                src="https://files.fullstack.edu.vn/f8-prod/courses/7.png"
-                alt=""
-                className="w-full h-full object-cover hover:opacity-80"
-              />
+              {props.thumbnail_url ? (
+                <img
+                  src={props.thumbnail_url}
+                  alt=""
+                  className="w-full h-full object-cover hover:opacity-80"
+                />
+              ) : (
+                <Skeleton className="w-full h-full" />
+              )}
             </div>
             <div className="flex flex-col gap-y-1 justify-between">
               <div>
                 <h3 className="text-sm md:text-xl font-semibold dark:text-white">
-                  <a href="">
-                    Kiến thức nhập môn IT
-                  </a>
+                  <p>{props.name}</p>
                 </h3>
               </div>
-              <p className="text-black dark:text-white" >Các kiến thức cơ bản, nền móng của ngành IT</p>
+              <p className="text-black dark:text-white">{props.description}</p>
               <div>
                 <span className="text-sm text-gray-400">
-                  Nghĩa NĐ
+                  {authors[0]?.name}
                 </span>
               </div>
 
@@ -88,15 +105,25 @@ const CourseCard = () => {
               </div>
 
               <div className="flex items-center gap-1">
-                <BsClock className="hidden sm:block" color={theme === 'light' ? 'black' : 'white'} />
-                <span className="mr-4 dark:text-white">10 giờ học</span>
-                <BsBook className="hidden sm:block" color={theme === 'light' ? 'black' : 'white'}/>
-                <span className="dark:text-white">370 bài học</span>
+                <BsClock
+                  className="hidden sm:block"
+                  color={theme === "light" ? "black" : "white"}
+                />
+                <span className="mr-4 dark:text-white">
+                  {props.duration} giờ học
+                </span>
+                <BsBook
+                  className="hidden sm:block"
+                  color={theme === "light" ? "black" : "white"}
+                />
+                {/* <span className="dark:text-white">
+                  {props.module?.length} bài học
+                </span> */}
               </div>
             </div>
           </div>
           <div className="flex flex-col md:justify-between items-end">
-            <h3 className="text-black dark:text-white">299.000đ</h3>
+            <h3 className="text-black dark:text-white">{props.price}</h3>
             <h3 className="line-through text-sm text-gray-400">499.000đ</h3>
           </div>
         </div>

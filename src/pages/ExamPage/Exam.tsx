@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
-import Question from "../Question";
-import ExamController from "./ExamController";
+import Question from "../../components/Question";
 import { ExamProvider } from "../../contexts/ExamContext";
+import ExamController from "./ExamController";
 
 const Exam: React.FC = () => {
   const arr = new Array(10).fill(0);

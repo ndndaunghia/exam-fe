@@ -20,18 +20,21 @@ import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 
 import { useTheme } from "../../hooks/useTheme";
 import {
-  fetchUserData,
-  loginUser,
-  registerUser,
-} from "../../services/auth/authActions";
-import { logout } from "../../services/auth/authSlice";
-import {
-  LoginCredentials,
-  RegisterCredentials,
-} from "../../services/auth/auth.type";
+  loginAsync,
+  logout,
+  registerAsync,
+} from "../../services/auth/authSlice";
+
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT_SUCCESS, REGISTER_FAIL, REGISTER_SUCCESS } from "../../utils/constants";
+import {
+  LOGIN_FAIL,
+  LOGIN_SUCCESS,
+  LOGOUT_SUCCESS,
+  REGISTER_FAIL,
+  REGISTER_SUCCESS,
+} from "../../utils/constants";
+import { AuthRequest } from "../../services/auth/auth.type";
 
 const products = [
   {
@@ -84,20 +87,20 @@ export default function Header() {
   const [theme, setTheme] = useTheme();
 
   const dispatch = useAppDispatch();
-  const { isLoading, error, user } = useAppSelector((state) => state.auth);
+  const { loading, error, user } = useAppSelector((state) => state.auth);
 
   const {
     register: registerLogin,
     handleSubmit: handleSubmitLogin,
     formState: { errors: loginErrors },
-  } = useForm<LoginCredentials>();
+  } = useForm<AuthRequest>();
 
   const {
     register: registerSignUp,
     handleSubmit: handleSubmitSignUp,
     formState: { errors: signUpErrors },
     getValues,
-  } = useForm<RegisterCredentials>();
+  } = useForm<AuthRequest>();
 
   const userNavigation = [
     { name: "Trang cá nhân", href: "/profile" },
@@ -127,11 +130,10 @@ export default function Header() {
 
   const onLoginSubmit = handleSubmitLogin(async (data) => {
     try {
-      const resultAction = await dispatch(loginUser(data));
+      const resultAction = await dispatch(loginAsync(data));
 
-      if (loginUser.fulfilled.match(resultAction)) {
-        localStorage.setItem("userId", resultAction.payload.data._id);
-        console.log("Login success:", resultAction.payload);
+      if (loginAsync.fulfilled.match(resultAction)) {
+        localStorage.setItem("userId", resultAction.payload.user.id + "");
         closeLoginModal();
         toast.success(LOGIN_SUCCESS);
       }
@@ -143,9 +145,12 @@ export default function Header() {
 
   const onSignUpSubmit = handleSubmitSignUp(async (data) => {
     try {
-      const resultAction = await dispatch(registerUser(data));
+     
+      const { confirm_password, ...payload } = data;
 
-      if (registerUser.fulfilled.match(resultAction)) {
+      const resultAction = await dispatch(registerAsync(payload));
+
+      if (registerAsync.fulfilled.match(resultAction)) {
         // localStorage.setItem("userId", resultAction.payload.data._id);
         console.log("Register success:", resultAction.payload);
         closeSignUpModal();
@@ -158,27 +163,27 @@ export default function Header() {
     }
   });
 
-  useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (userId) {
-      const fetchUser = async () => {
-        try {
-          const resultAction = await dispatch(fetchUserData(userId));
-          if (fetchUserData.fulfilled.match(resultAction)) {
-            // Successfully fetched user data
-            console.log("User data:", resultAction.payload);
-          } else {
-            // Handle errors
-            console.error("Failed to fetch user data:", resultAction.payload);
-          }
-        } catch (error) {
-          console.error("Error during fetchUserData:", error);
-        }
-      };
+  // useEffect(() => {
+  //   const userId = localStorage.getItem("userId");
+  //   if (userId) {
+  //     const fetchUser = async () => {
+  //       try {
+  //         const resultAction = await dispatch(fetchUserData(userId));
+  //         if (fetchUserData.fulfilled.match(resultAction)) {
+  //           // Successfully fetched user data
+  //           console.log("User data:", resultAction.payload);
+  //         } else {
+  //           // Handle errors
+  //           console.error("Failed to fetch user data:", resultAction.payload);
+  //         }
+  //       } catch (error) {
+  //         console.error("Error during fetchUserData:", error);
+  //       }
+  //     };
 
-      fetchUser();
-    }
-  }, [dispatch]);
+  //     fetchUser();
+  //   }
+  // }, [dispatch]);
 
   return (
     <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50 dark:bg-dark">
@@ -304,7 +309,7 @@ export default function Header() {
           {user ? (
             <Popover className="relative">
               <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none dark:text-white">
-                {user.username}
+                {user.name}
                 <ChevronDownIcon
                   className="h-5 w-5 flex-none text-gray-400"
                   aria-hidden="true"
@@ -330,7 +335,7 @@ export default function Header() {
                         onClick: () => {
                           dispatch(logout());
                           toast.success(LOGOUT_SUCCESS);
-                        }
+                        },
                       })}
                     >
                       {item.name}
@@ -512,7 +517,7 @@ export default function Header() {
                   <div className="py-6 px-6 mx-auto xl:py-0">
                     <div className="w-full bg-white  md:mt-0 xl:p-0">
                       <div className="p-6 space-y-4 md:space-y-6 sm:p-4">
-                        {isLoading && (
+                        {loading && (
                           <div className="absolute inset-0 bg-gray-100 bg-opacity-50 flex items-center justify-center">
                             <div className="rounded-md h-12 w-12 border-4 border-t-4 border-primary animate-spin" />
                           </div>
@@ -524,27 +529,27 @@ export default function Header() {
                         >
                           <div>
                             <label
-                              htmlFor="username"
+                              htmlFor="email"
                               className="block mb-2 text-sm font-medium  text-gray-900"
                             >
                               Tên đăng nhập
                             </label>
                             <input
                               type="text"
-                              id="username"
+                              id="email"
                               className="bg-gray-50 border border-gray-300  sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              placeholder="nguyenvana"
-                              {...registerLogin("username", {
-                                required: "Vui lòng nhập tên đăng nhập",
+                              placeholder="nguyenvana@gmail.com"
+                              {...registerLogin("email", {
+                                required: "Vui lòng nhập email",
                                 pattern: {
                                   value:
-                                    /^[A-Za-z][A-Za-z0-9_]{6,29}$/i,
-                                  message: "Tên đăng nhập không hợp lệ",
+                                    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                  message: "Email không hợp lệ",
                                 },
                               })}
                             />
                             <p className="text-sm text-grey italic mt-2 text-red-400">
-                              {loginErrors?.username?.message}
+                              {loginErrors?.email?.message}
                             </p>
                           </div>
                           <div>
@@ -662,7 +667,7 @@ export default function Header() {
                           action="#"
                           onSubmit={onSignUpSubmit}
                         >
-                          <div>
+                          {/* <div>
                             <label
                               htmlFor="username"
                               className="block mb-2 text-sm font-medium  text-gray-900"
@@ -687,7 +692,7 @@ export default function Header() {
                             <p className="text-sm text-grey italic mt-2 text-red-400">
                               {signUpErrors?.username?.message}
                             </p>
-                          </div>
+                          </div> */}
                           <div>
                             <label
                               htmlFor="email"
@@ -732,8 +737,6 @@ export default function Header() {
                                   message: "Mật khẩu phải có ít nhất 6 ký tự",
                                 },
                                 validate: (value) => {
-                                  if (!/[A-Z]/.test(value))
-                                    return "Mật khẩu phải chứa ít nhất 1 ký tự hoa";
                                   if (!/[!@#$&*]/.test(value))
                                     return "Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt";
                                   if (!/[0-9]/.test(value))
@@ -755,10 +758,10 @@ export default function Header() {
                             </label>
                             <input
                               type="password"
-                              id="confirmPassword"
+                              id="confirm_password"
                               placeholder="••••••••"
                               className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-400 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              {...registerSignUp("confirmPassword", {
+                              {...registerSignUp("confirm_password", {
                                 required: "Vui lòng nhập mật khẩu",
                                 validate: (value) => {
                                   if (value === "")
@@ -770,7 +773,7 @@ export default function Header() {
                               })}
                             />
                             <p className="text-sm text-grey italic mt-2 text-red-400">
-                              {signUpErrors?.confirmPassword?.message}
+                              {signUpErrors?.confirm_password?.message}
                             </p>
                           </div>
                           <button

@@ -1,26 +1,18 @@
-import axios from "axios";
-import { LoginCredentials, LoginResponse } from "./auth.type";
+import axiosInstance from "../../utils/axiosInstance";
+import { AuthRequest, AuthResponse } from "./auth.type";
 
-const API_URL = "http://localhost:8080/api/v1/user";
+export const login = async (authRequest: AuthRequest) => {
+  const response = await axiosInstance.post<AuthResponse>(
+    "/login",
+    authRequest
+  );
+  return response.data;
+};
 
-// Tạo một instance của axios với cấu hình mặc định
-const axiosInstance = axios.create({
-  baseURL: API_URL,
-  withCredentials: true,
-});
-
-export const loginUser = async (
-  credentials: LoginCredentials
-): Promise<LoginResponse> => {
-  try {
-    const response = await axiosInstance.post<LoginResponse>(
-      "/login",
-      credentials
-    );
-    console.log("Login response:", response);
-    return response.data;
-  } catch (error) {
-    console.error("Login error:", error);
-    throw error;
-  }
+export const register = async (authRequest: AuthRequest) => {
+  const response = await axiosInstance.post<AuthResponse>(
+    "/register",
+    authRequest
+  );
+  return response.data;
 };

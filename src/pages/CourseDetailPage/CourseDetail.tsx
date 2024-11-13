@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import ItemCourse from "../ItemCourse";
-import Typography from "../Typography/Typography";
+import ItemCourse from "../../components/ItemCourse";
+import Typography from "../../components/Typography/Typography";
 import { FiPlus, FiMinus, FiVideo } from "react-icons/fi";
 import { BsClock } from "react-icons/bs";
 import { IoMdPlayCircle } from "react-icons/io";
 import { BsPersonVideo3 } from "react-icons/bs";
-import Button from "../Button/Button";
+import Button from "../../components/Button/Button";
 import Colors from "../../config/colors";
 
 interface Lesson {
@@ -116,13 +116,21 @@ const CourseDetail: React.FC = () => {
   if (!courseData) return <div>Loading...</div>;
 
   return (
-    <div className="md:px-4 lg:px-8 xl:px-14 2xl:px-22 mt-12">
+    <div className="md:px-4 lg:px-8 xl:px-14 2xl:px-22 mt-12 min-h-screen dark:bg-dark">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 px-2">
-          <Typography variant="h3" responsive className="text-black dark:text-white">
+          <Typography
+            variant="h3"
+            responsive
+            className="text-black dark:text-white"
+          >
             {courseData.title}
           </Typography>
-          <Typography variant="p" responsive className="text-gray-600 my-4 dark:text-white">
+          <Typography
+            variant="p"
+            responsive
+            className="text-gray-600 my-4 dark:text-white"
+          >
             {courseData.description}
           </Typography>
           <div className="mt-10">

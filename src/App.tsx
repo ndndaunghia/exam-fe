@@ -11,22 +11,21 @@ const CourseDetailPage = lazy(() => import("./pages/CourseDetailPage"));
 const ErrorPage = lazy(() => import("./pages/ErrorPage"));
 
 function App() {
-
   return (
-      <Router>
-        <Suspense fallback={<Loading />}>
-          <Routes>
-            <Route element={<PrivateRoutes />}>
-              <Route element={<ExamPage />} path="/exam" />
-            </Route>
-            <Route element={<HomePage />} path="/"/>
-            <Route element={<ListTestPage />} path="/list-test" />
-            <Route element={<CoursePage />} path="/course" />
-            <Route element={<CourseDetailPage />} path="/course-detail" />
-            <Route element={<ErrorPage />} path="*" />
-          </Routes>
-        </Suspense>
-      </Router>
+    <Router>
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route element={<PrivateRoutes />}>
+            <Route element={<ExamPage />} path="/exam" />
+          </Route>
+          <Route element={<HomePage />} path="/" />
+          <Route element={<ListTestPage />} path="/list-test" />
+          <Route element={<CoursePage />} path="/course" />
+          <Route element={<CourseDetailPage />} path="/course-detail" />
+          <Route element={<ErrorPage />} path="*" />
+        </Routes>
+      </Suspense>
+    </Router>
   );
 }
 

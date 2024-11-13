@@ -26,10 +26,10 @@ const SidebarItem = (props: SidebarItemType) => {
           isOpenTab ? "block" : "hidden"
         }`}
       >
-        {props.labels.map((label) => {
+        {props?.labels?.map((label) => {
           return (
             <label htmlFor={label} className="my-2 cursor-pointer" key={label}>
-              <input type="radio" name={props.type} id={label} />
+              <input type="checkbox" name={props.type} id={label} />
               <span className="mx-4">{label}</span>
             </label>
           );

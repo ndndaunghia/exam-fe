@@ -1,11 +1,11 @@
 import { lazy } from "react";
 
 const ExamPage = lazy(() => import("../pages/ExamPage"));
-const ListTestPage = lazy(() => import("../pages/ListTestPage"));
+const ListTestPage = lazy(() => import("../pages/ListTestPage/ListTestPage"));
 const HomePage = lazy(() => import("../pages/HomePage"));
-const CoursePage = lazy(() => import("../pages/CoursePage"));
-const CourseDetailPage = lazy(() => import("../pages/CourseDetailPage"));
-const ErrorPage = lazy(() => import("../pages/ErrorPage"));
+const CoursePage = lazy(() => import("../pages/CoursePage/CoursePage"));
+const CourseDetailPage = lazy(() => import("../pages/CourseDetailPage/CourseDetailPage"));
+const ErrorPage = lazy(() => import("../pages/ErrorPage/ErrorPage"));
 
 export const routes = [
   {

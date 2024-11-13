@@ -1,8 +1,8 @@
-import animationError from "../assets/animation/404.json";
+import animationError from "../../assets/animation/404.json";
 import Lottie from "react-lottie";
-import Button from "../components/Button/Button";
-import useNavigateCustom from "../hooks/useNavigateCustom";
-import Colors from "../config/colors";
+import Button from "../../components/Button/Button";
+import useNavigateCustom from "../../hooks/useNavigateCustom";
+import Colors from "../../config/colors";
 
 const ErrorPage = () => {
   const { handleNavigate } = useNavigateCustom();
