@@ -30,11 +30,6 @@ const CoursePage = () => {
             <div className="col-span-12 sm:col-span-12 md:col-span-12 lg:col-span-2 text-center h-fit top-24">
               <div className="flex flex-col">
                 <SidebarItem
-                  title={YEAR_ITEM.title}
-                  type={YEAR_ITEM.type}
-                  labels={YEAR_ITEM.labels}
-                />
-                <SidebarItem
                   title="Môn học"
                   type="subject"
                   labels={subjects.map((subject) => subject.name)}

@@ -59,7 +59,7 @@ const Banner = () => {
                   style={{ backgroundColor: "transparent" }}
                 />
               }
-              onClick={() => handleNavigate("/list-test")}
+              onClick={() => handleNavigate("/list-exam")}
             />
           </div>
         </div>

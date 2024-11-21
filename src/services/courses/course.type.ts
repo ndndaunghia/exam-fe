@@ -1,14 +1,15 @@
+import { Module } from "../modules/module.type";
 import { Subject } from "../subjects/subject.type";
 
 export interface Course {
   id: number;
   subject_id: number;
   name: string;
-  thumbnail_url: string | undefined | null;
+  thumbnail_url: string | null;
   author_id: string;
   total_purchases: number;
   description: string | null;
-  price: number;
+  price: string;  // Thay đổi từ number sang string vì API trả về price dạng string
   duration: number;
   status: number;
   created_at: string;
@@ -16,11 +17,11 @@ export interface Course {
   deleted_at: string | null;
   status_string: string;
   subject: Subject;
-  module: null; // Để tạm thời
+  module: Module[];
 }
 
-export interface CoursesData {
-  data: Course[];
+export interface PaginatedData<T> {
+  data: T[];
   total: number;
   per_page: number;
   current_page: number;
@@ -28,17 +29,19 @@ export interface CoursesData {
   has_more_pages: boolean;
 }
 
-export interface DetailCourseResponse {
-  msg: string;
-  code: number;
-  data: Course;
-}
-
 export interface ListCourseResponse {
   msg: string;
   code: number;
   data: {
-    courses: CoursesData;
+    courses: PaginatedData<Course>;
+  };
+}
+
+export interface DetailCourseResponse {
+  msg: string;
+  code: number;
+  data: {
+    course: Course;  // Thêm key course vì API response có nested course
   };
 }
 

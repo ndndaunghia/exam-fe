@@ -21,7 +21,7 @@ const CourseCard = (props: Course) => {
 
   return (
     <>
-      <Link to="/course-detail">
+      <Link to={`/course/${props.id}`}>
         <div className="flex flex-col md:flex-row justify-between gap-4 pb-[22px] border-b-gray-400 border-white border-2 cursor-pointer dark:border-dark dark:border-b-dark-light">
           <div className="flex gap-6">
             <div className="w-full md:w-60 h-40">
@@ -37,7 +37,7 @@ const CourseCard = (props: Course) => {
             </div>
             <div className="flex flex-col gap-y-1 justify-between">
               <div>
-                <h3 className="text-sm md:text-xl font-semibold dark:text-white">
+                <h3 className="text-blue-400 text-sm md:text-xl font-semibold dark:text-white">
                   <p>{props.name}</p>
                 </h3>
               </div>

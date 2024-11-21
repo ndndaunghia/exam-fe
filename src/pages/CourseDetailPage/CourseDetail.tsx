@@ -7,93 +7,34 @@ import { IoMdPlayCircle } from "react-icons/io";
 import { BsPersonVideo3 } from "react-icons/bs";
 import Button from "../../components/Button/Button";
 import Colors from "../../config/colors";
-
-interface Lesson {
-  id: number;
-  title: string;
-  duration: string;
-}
-
-interface Chapter {
-  id: number;
-  title: string;
-  lessons: Lesson[];
-}
-
-interface CourseData {
-  title: string;
-  description: string;
-  chapterCount: number;
-  lessonCount: number;
-  totalDuration: string;
-  chapters: Chapter[];
-}
+import { useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
+import { getDetailCourseAsync } from "../../services/courses/courseSlice";
+import Loading from "../../components/Loading";
 
 const CourseDetail: React.FC = () => {
-  const [courseData, setCourseData] = useState<CourseData | null>(null);
+  const { courseId } = useParams();
+  const { courses } = useAppSelector((state) => state.course);
+  const dispatch = useAppDispatch();
   const [expandedChapters, setExpandedChapters] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Giả lập việc lấy dữ liệu từ API hoặc cơ sở dữ liệu
-    const fetchCourseData = async () => {
-      // Thay thế bằng cuộc gọi API thực tế
-      const data: CourseData = {
-        title: "Lập trình C++ cơ bản, nâng cao",
-        description:
-          "Khóa học lập trình C++ từ cơ bản tới nâng cao dành cho người mới bắt đầu...",
-        chapterCount: 11,
-        lessonCount: 138,
-        totalDuration: "10 giờ 29 phút",
-        chapters: [
-          {
-            id: 1,
-            title: "Giới thiệu",
-            lessons: [
-              { id: 1, title: "Giới thiệu khóa học", duration: "01:03" },
-              { id: 2, title: "Cài đặt Dev - C++", duration: "01:03" },
-              {
-                id: 3,
-                title: "Hướng dẫn sử dụng Dev - C++",
-                duration: "01:03",
-              },
-            ],
-          },
-          {
-            id: 2,
-            title: "Biến và kiểu dữ liệu",
-            lessons: [
-              {
-                id: 1,
-                title: "Biến và nhập xuất kiểu dữ liệu",
-                duration: "01:03",
-              },
-              { id: 2, title: "Biến là gì?", duration: "01:03" },
-              { id: 3, title: "Kiểu dữ liệu thường gặp", duration: "01:03" },
-              { id: 4, title: "Kiểu dữ liệu thường gặp", duration: "01:03" },
-            ],
-          },
-          {
-            id: 3,
-            title: "Biến và kiểu dữ liệu",
-            lessons: [
-              {
-                id: 1,
-                title: "Biến và nhập xuất kiểu dữ liệu",
-                duration: "01:03",
-              },
-              { id: 2, title: "Biến là gì?", duration: "01:03" },
-              { id: 3, title: "Kiểu dữ liệu thường gặp", duration: "01:03" },
-              { id: 4, title: "Kiểu dữ liệu thường gặp", duration: "01:03" },
-            ],
-          },
-          // Thêm các chương khác ở đây
-        ],
-      };
-      setCourseData(data);
+    const fetchCourse = async () => {
+      try {
+        setIsLoading(true);
+        if (courseId) {
+          await dispatch(getDetailCourseAsync(parseInt(courseId)));
+        }
+      } catch (error) {
+        console.error("Error fetching course:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    fetchCourseData();
-  }, []);
+    fetchCourse();
+  }, [courseId, dispatch]);
 
   const toggleChapter = (chapterId: number) => {
     setExpandedChapters((prev) =>
@@ -103,17 +44,12 @@ const CourseDetail: React.FC = () => {
     );
   };
 
-  const toggleAllChapters = () => {
-    if (courseData) {
-      if (expandedChapters.length === courseData.chapters.length) {
-        setExpandedChapters([]);
-      } else {
-        setExpandedChapters(courseData.chapters.map((chapter) => chapter.id));
-      }
-    }
-  };
+  if (isLoading) return <Loading />;
+  if (!courses || !courses[0]) return <div>No course found</div>;
 
-  if (!courseData) return <div>Loading...</div>;
+  const course = courses[0]; // For better readability
+
+  console.log(course);
 
   return (
     <div className="md:px-4 lg:px-8 xl:px-14 2xl:px-22 mt-12 min-h-screen dark:bg-dark">
@@ -124,14 +60,14 @@ const CourseDetail: React.FC = () => {
             responsive
             className="text-black dark:text-white"
           >
-            {courseData.title}
+            {course.name}
           </Typography>
           <Typography
             variant="p"
             responsive
             className="text-gray-600 my-4 dark:text-white"
           >
-            {courseData.description}
+            {course.description}
           </Typography>
           <div className="mt-10">
             <div>
@@ -142,55 +78,30 @@ const CourseDetail: React.FC = () => {
             <div className="flex justify-between my-2 dark:text-white">
               <ul className="flex gap-2">
                 <li className="hidden lg:block">
-                  <strong>{courseData.chapterCount}</strong> chương
+                  <strong>{course.module?.length || 0}</strong> chương
                 </li>
                 <li className="hidden lg:block">|</li>
                 <li>
-                  <strong>{courseData.lessonCount}</strong> bài học
+                  <strong>{course.duration}</strong> bài học
                 </li>
                 <li className="hidden md:block">|</li>
                 <li className="hidden md:block">
                   Thời lượng
-                  <strong> {courseData.totalDuration}</strong>
+                  <strong> {course.duration}</strong>
                 </li>
               </ul>
-              <div>
-                <span
-                  className="text-primary font-bold cursor-pointer"
-                  onClick={toggleAllChapters}
-                >
-                  {expandedChapters.length === courseData.chapters.length
-                    ? "Thu gọn tất cả"
-                    : "Mở rộng tất cả"}
-                </span>
-              </div>
             </div>
           </div>
           <div className="mt-10 flex flex-col gap-4">
-            {courseData.chapters.map((chapter) => (
-              <div key={chapter.id}>
+            {course.module?.map((module) => (
+              <div key={module.id}>
                 <ItemCourse
-                  icon={
-                    expandedChapters.includes(chapter.id) ? FiMinus : FiPlus
-                  }
-                  title={`${chapter.id}. ${chapter.title}`}
-                  lessonCount={chapter.lessons.length}
+                  icon={expandedChapters.includes(module.id) ? FiMinus : FiPlus}
+                  title={`${module.id}. ${module.name}`}
+                  lessonCount={course.module?.length || 0}
                   backgroundColor="#f5f5f5"
-                  onClick={() => toggleChapter(chapter.id)}
+                  onClick={() => toggleChapter(module.id)}
                 />
-                {expandedChapters.includes(chapter.id) &&
-                  chapter.lessons.map((lesson) => (
-                    <ItemCourse
-                      key={lesson.id}
-                      icon={IoMdPlayCircle}
-                      title={`${lesson.id}. ${lesson.title}`}
-                      lessonCount={lesson.duration}
-                      backgroundColor="#ffffff"
-                      hasBorderBottom
-                      borderBottomColor="#f5f5f5"
-                      isSubItemCourse
-                    />
-                  ))}
               </div>
             ))}
           </div>
@@ -199,7 +110,7 @@ const CourseDetail: React.FC = () => {
           <div className="">
             <div className="rounded-xl">
               <img
-                src="https://files.fullstack.edu.vn/f8-prod/courses/7.png"
+                src={course.thumbnail_url || ""}
                 alt=""
                 className="w-full h-full object-cover hover:opacity-80 rounded-xl"
               />
@@ -222,12 +133,12 @@ const CourseDetail: React.FC = () => {
               <ul className="my-10 hidden md:flex md:flex-col md:justify-start md:items-start">
                 <li className="flex justify-center items-center gap-2 my-2">
                   <FiVideo />
-                  {courseData.lessonCount} bài học
+                  {course.module?.length || 0} bài học
                 </li>
                 <li className="flex justify-center items-center gap-2 my-2">
                   <BsClock />
                   Thời lượng
-                  {` ${courseData.totalDuration}`}
+                  {` ${course.duration}`}
                 </li>
                 <li className="flex justify-center items-center gap-2 my-2">
                   <BsPersonVideo3 />

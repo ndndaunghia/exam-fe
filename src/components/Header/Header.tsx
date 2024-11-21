@@ -213,7 +213,7 @@ export default function Header() {
         </div>
         <Popover.Group className="hidden xl:flex xl:gap-x-12">
           <Link
-            to="/list-test"
+            to="/list-exam"
             className="text-base font-semibold leading-6 text-gray-900 dark:text-white"
           >
             Luyện thi

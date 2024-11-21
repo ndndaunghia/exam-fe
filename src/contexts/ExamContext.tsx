@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext, useMemo, useCallback } from
 
 interface Answer {
   questionIndex: number;
-  selectedOption: string;
+  selectedOption: string; // Now can be comma-separated for multiple selections
 }
 
 interface ExamContextType {

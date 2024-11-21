@@ -75,7 +75,7 @@ const courseSlice = createSlice({
       })
       .addCase(getDetailCourseAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.courses = [action.payload];
+        state.courses = [action.payload.course];
         state.success = true;
       })
       .addCase(getDetailCourseAsync.rejected, (state, action) => {

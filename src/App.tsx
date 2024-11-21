@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import PrivateRoutes from "./routes/PrivateRoutes";
 import Loading from "./components/Loading";
+import CoursePlayer from "./pages/CoursePlayer";
 
 const ExamPage = lazy(() => import("./pages/ExamPage"));
 const ListTestPage = lazy(() => import("./pages/ListTestPage"));
@@ -16,12 +17,13 @@ function App() {
       <Suspense fallback={<Loading />}>
         <Routes>
           <Route element={<PrivateRoutes />}>
-            <Route element={<ExamPage />} path="/exam" />
+            <Route element={<ExamPage />} path="/exam/:examId" />
           </Route>
           <Route element={<HomePage />} path="/" />
-          <Route element={<ListTestPage />} path="/list-test" />
+          <Route element={<ListTestPage />} path="/list-exam" />
           <Route element={<CoursePage />} path="/course" />
-          <Route element={<CourseDetailPage />} path="/course-detail" />
+          <Route element={<CourseDetailPage />} path="/course/:courseId" />
+          <Route element={<CoursePlayer />} path="/course-player/:courseId" />
           <Route element={<ErrorPage />} path="*" />
         </Routes>
       </Suspense>
