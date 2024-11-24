@@ -1,17 +1,18 @@
-import Footer from "../../components/Footer/Footer";
+import React from "react";
 import Header from "../../components/Header";
-import Exam from "./Exam";
+import Footer from "../../components/Footer/Footer";
+import ExamHistories from "./ExamHistories";
 
-const ExamPage = () => {
+const ExamHistoriesPage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-[#f8f9fa] dark:bg-dark">
       <Header />
       <main className="flex-grow">
-        <Exam />
+        <ExamHistories />
       </main>
       <Footer />
     </div>
   );
 };
 
-export default ExamPage;
+export default ExamHistoriesPage;

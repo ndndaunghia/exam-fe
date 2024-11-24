@@ -1,6 +1,10 @@
 import axiosInstance from "../../utils/axiosInstance";
 import {
   DetailExamResponse,
+  ExamHistoryReview,
+  ExamHistoryReviewResponse,
+  ExamResponse,
+  ExamResult,
   ExamSubmissionRequest,
   ExamSubmissionResponse,
   ListExamResponse,
@@ -22,6 +26,7 @@ export const getDetailExam = async (id: number) => {
   );
   return response.data;
 };
+
 export const submitExam = async (
   examId: number,
   answers: ExamSubmissionRequest["answers"]
@@ -29,6 +34,26 @@ export const submitExam = async (
   const response = await axiosInstance.post<ExamSubmissionResponse>(
     `do-exam/${examId}`,
     { answers }
+  );
+  return response.data;
+};
+
+export const getAllExamsHistory = async (
+  page: number = 1,
+  limit: number = 10
+) => {
+  const response = await axiosInstance.get<ExamResponse>("exam-histories", {
+    params: {
+      page,
+      limit,
+    },
+  });
+  return response.data;
+};
+
+export const getExamHistoryReview = async (historyId: number) => {
+  const response = await axiosInstance.get<ExamHistoryReviewResponse>(
+    `exam-histories/${historyId}`
   );
   return response.data;
 };

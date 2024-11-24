@@ -1,102 +1,78 @@
-import { LegacyRef, forwardRef } from "react";
-import { useExam } from "../../contexts/ExamContext";
-import { Question } from "../../services/exam/exam.type";
+import React, { forwardRef } from "react";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
+import { setAnswer } from "../../services/exam/examSlice";
 
-const QuestionItem = (
-  {
-    questionIndex,
-    id,
-    question,
-  }: {
-    questionIndex: number;
-    id: string;
-    question: Question;
-  },
-  ref: LegacyRef<HTMLDivElement> | undefined
-) => {
-  const { handleSelectAnswer, answers } = useExam();
-  const currentAnswer = answers.find(
-    (answer) => answer.questionIndex === questionIndex
-  );
+interface QuestionItemProps {
+  question: {
+    id: number;
+    name: string;
+    total_correct_option: number;
+    options: {
+      id: number;
+      content: string;
+    }[];
+  };
+  questionIndex: number;
+  id: string;
+}
 
-  // Determine input type based on number of correct answers
-  const isMultipleChoice = question.options.filter(opt => opt.is_correct === 1).length > 1;
-  const inputType = isMultipleChoice ? "checkbox" : "radio";
+const QuestionItem = forwardRef<HTMLDivElement, QuestionItemProps>(
+  ({ question, questionIndex, id }, ref) => {
+    const dispatch = useAppDispatch();
+    const answers = useAppSelector((state) => state.exam.answers);
 
-  return (
-    <div className="flex my-10 gap-4" id={id} ref={ref}>
-      <div>
-        <p className="bg-[#e8f2ff] min-w-8 min-h-8 flex justify-center items-center rounded-full ">
-          {questionIndex + 1}
-        </p>
-      </div>
-      <div className="flex flex-col flex-grow">
-        <div>
-          <p className="dark:text-white font-semibold">{question.name}</p>
-          {/* {question.description && (
-            <p className="text-gray-600 my-2">{question.description}</p>
-          )} */}
-          {question.image_url && (
-            <p className="my-4">
-              <img src={question.image_url} alt="Question" className="max-w-full" />
-            </p>
-          )}
+    const currentAnswer = answers.find(
+      (answer) => answer.exam_question_id === question.id
+    );
+
+    const isMultipleChoice = question.total_correct_option > 1;
+
+    const selectedOptions = currentAnswer?.options
+      ? currentAnswer.options.split(", ").map(Number)
+      : [];
+
+    const handleSelectOption = (optionId: number) => {
+      dispatch(
+        setAnswer({
+          exam_question_id: question.id,
+          optionId,
+          isMultiple: isMultipleChoice,
+        })
+      );
+    };
+
+    return (
+      <div
+        id={id}
+        ref={ref}
+        className="mb-8 p-4 rounded-xl border-[1px] border-gray-200 dark:border-dark-light"
+      >
+        <div className="flex gap-4">
+          <span className="text-lg font-semibold dark:text-white">
+            {questionIndex + 1}.
+          </span>
+          <p className="text-lg dark:text-white">{question.name}</p>
         </div>
-        <div className="my-4">
-          {question.options.map((option, index) => (
-            <div key={option.id} className="flex gap-3 items-center my-2">
-              <input
-                type={inputType}
-                name={`question-${questionIndex}`}
-                id={`question-${questionIndex}-${option.id}`}
-                className="accent-[#517C96] dark:text-white"
-                checked={
-                  inputType === "radio"
-                    ? currentAnswer?.selectedOption === option.id.toString()
-                    : currentAnswer?.selectedOption?.includes(option.id.toString()) || false
-                }
-                onChange={() => {
-                  // For radio, simply select the option
-                  if (inputType === "radio") {
-                    handleSelectAnswer(questionIndex, option.id.toString());
-                  } else {
-                    // For checkbox, toggle the option
-                    const selectedOptions = currentAnswer?.selectedOption 
-                      ? currentAnswer.selectedOption.split(',')
-                      : [];
-                    const optionIdStr = option.id.toString();
-                    const newSelectedOptions = selectedOptions.includes(optionIdStr)
-                      ? selectedOptions.filter(id => id !== optionIdStr)
-                      : [...selectedOptions, optionIdStr];
-                    handleSelectAnswer(
-                      questionIndex, 
-                      newSelectedOptions.join(',')
-                    );
-                  }
-                }}
-              />
-              <label
-                className="dark:text-white flex-grow"
-                htmlFor={`question-${questionIndex}-${option.id}`}
-              >
-                {String.fromCharCode(65 + index)}. {option.content}
-                {/* {option.explanation && (
-                  <span className="text-sm text-gray-500 ml-2">
-                    ({option.explanation})
-                  </span>
-                )}
-                {option.is_correct === 1 && (
-                  <span className="text-green-500 text-xs ml-2">
-                    (Đúng)
-                  </span>
-                )} */}
+        <div className="ml-8 mt-4">
+          {question.options.map((option) => (
+            <div key={option.id} className="mb-2">
+              <label className="flex items-center gap-2 cursor-pointer dark:text-white">
+                <input
+                  type={isMultipleChoice ? "checkbox" : "radio"}
+                  name={`question-${question.id}`}
+                  value={option.id}
+                  checked={selectedOptions.includes(option.id)}
+                  onChange={() => handleSelectOption(option.id)}
+                  className="w-4 h-4 cursor-pointer"
+                />
+                <span>{option.content}</span>
               </label>
             </div>
           ))}
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
 
-export default forwardRef(QuestionItem);
+export default QuestionItem;

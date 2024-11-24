@@ -104,6 +104,7 @@ export default function Header() {
 
   const userNavigation = [
     { name: "Trang cá nhân", href: "/profile" },
+    { name: "Lịch sử làm bài", href: "/exam-histories" },
     { name: "Cài đặt", href: "/settings" },
     { name: "Đăng xuất", href: "#" },
   ];

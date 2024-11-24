@@ -1,17 +1,17 @@
-import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header";
-import Exam from "./Exam";
+import ExamReview from "./ExamReview";
+import Footer from "../../components/Footer/Footer";
 
-const ExamPage = () => {
+const ExamReviewPage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-[#f8f9fa] dark:bg-dark">
       <Header />
       <main className="flex-grow">
-        <Exam />
+        <ExamReview />
       </main>
       <Footer />
     </div>
   );
 };
 
-export default ExamPage;
+export default ExamReviewPage;

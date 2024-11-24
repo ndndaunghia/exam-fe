@@ -1,17 +1,18 @@
 import React, { useEffect, useRef } from "react";
 import QuestionItem from "../../components/QuestionItem";
-import { ExamProvider } from "../../contexts/ExamContext";
 import ExamController from "./ExamController";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
-import { getDetailExamAsync } from "../../services/exam/examSlice";
+import {
+  getDetailExamAsync,
+  resetAnswers,
+} from "../../services/exam/examSlice";
 
 const Exam: React.FC = () => {
   const ref = useRef(null);
   const { examId } = useParams();
   const dispatch = useAppDispatch();
 
-  // Lấy dữ liệu bài thi từ Redux store
   const { currentExam, loading, error } = useAppSelector((state) => state.exam);
 
   const handleScrollToQuestion = (index: number) => {
@@ -24,13 +25,18 @@ const Exam: React.FC = () => {
     }
   };
 
-  // Gọi API để lấy chi tiết đề thi khi component được mount
+  // Reset answers khi unmount
+  useEffect(() => {
+    return () => {
+      dispatch(resetAnswers());
+    };
+  }, [dispatch]);
+
   useEffect(() => {
     if (!examId) return;
     dispatch(getDetailExamAsync(parseInt(examId)));
   }, [dispatch, examId]);
 
-  // Hiển thị trạng thái loading, error hoặc dữ liệu bài thi
   if (loading) {
     return <div>Đang tải dữ liệu...</div>;
   }
@@ -46,32 +52,43 @@ const Exam: React.FC = () => {
   console.log(currentExam);
 
   return (
-    <ExamProvider>
-      <div className="pt-24 bg-[#f8f9fa] dark:bg-dark">
-        <div className="flex justify-center items-center gap-10">
-          <h1 className="text-center dark:text-white">{currentExam.name}</h1>
-          <button className="px-6 py-2 rounded-md text-blue-600 border-[1px] border-blue-300 hover:bg-[#517C96] hover:text-white">
-            <span className="font-semibold uppercase">thoát</span>
-          </button>
+    <div className="pt-24">
+      <div className="flex justify-center items-center gap-10">
+        <h1 className="text-center dark:text-white">{currentExam.name}</h1>
+        <button className="px-6 py-2 rounded-md text-blue-600 border-[1px] border-blue-300 hover:bg-[#517C96] hover:text-white">
+          <span className="font-semibold uppercase">thoát</span>
+        </button>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 p-4 gap-6 min-h-[calc(100vh-200px)]">
+        {" "}
+        {/* Thêm min-height */}
+        <div className="col-span-1 lg:col-span-10 p-4 rounded-xl bg-white shadow-xl dark:bg-dark-light">
+          {currentExam?.questions?.map((question, index) => (
+            <QuestionItem
+              key={question.id}
+              id={`question-${index}`}
+              question={{
+                ...question,
+                total_correct_option:
+                  (currentExam.questions &&
+                    currentExam.questions[index]?.total_correct_option) ||
+                  0,
+              }}
+              questionIndex={index}
+              ref={ref}
+            />
+          ))}
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-12 p-4 gap-6 ">
-          <div className="col-span-1 lg:col-span-10 p-4 rounded-xl bg-white shadow-xl dark:bg-dark-light">
-            {currentExam?.questions?.map((question, index) => (
-              <QuestionItem
-                key={`question-${index}`}
-                id={`question-${index}`}
-                question={question}
-                questionIndex={index}
-                ref={ref}
-              />
-            ))}
-          </div>
-          <div className="col-span-1 lg:col-span-2 p-4 bg-white shadow-xl text-center h-fit sticky top-24 dark:bg-dark-light">
-            <ExamController handleScrollToQuestion={handleScrollToQuestion} />
-          </div>
+        <div className="col-span-1 lg:col-span-2 p-4 bg-white shadow-xl text-center h-fit sticky top-24 dark:bg-dark-light">
+          <ExamController
+            handleScrollToQuestion={handleScrollToQuestion}
+            totalQuestions={
+              currentExam.questions ? currentExam.questions.length : 0
+            }
+          />
         </div>
       </div>
-    </ExamProvider>
+    </div>
   );
 };
 

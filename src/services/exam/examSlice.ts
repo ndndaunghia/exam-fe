@@ -1,10 +1,16 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ExamSliceState } from "./exam.type";
-import { getAllExams, getDetailExam, submitExam } from "./examApi";
+import {
+  getAllExams,
+  getAllExamsHistory,
+  getDetailExam,
+  submitExam,
+} from "./examApi";
 
 const initialState: ExamSliceState = {
   exams: [],
   currentExam: null,
+  history: [],
   total: 0,
   currentPage: 1,
   lastPage: 1,
@@ -12,6 +18,8 @@ const initialState: ExamSliceState = {
   error: null,
   success: false,
   submissionResult: null,
+
+  answers: [],
 };
 export const getAllExamsAsync = createAsyncThunk(
   "exam/getAllExams",
@@ -52,10 +60,29 @@ export const submitExamAsync = createAsyncThunk(
   ) => {
     try {
       const response = await submitExam(examId, answers);
+      console.log(response);
+
       return response.data;
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Nộp bài thi thất bại"
+      );
+    }
+  }
+);
+
+export const getAllExamsHistoryAsync = createAsyncThunk(
+  "exam/getAllExamsHistory",
+  async (
+    params: { page?: number; limit?: number } = {},
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await getAllExamsHistory(params.page, params.limit);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Lấy lịch sử bài thi thất bại"
       );
     }
   }
@@ -69,6 +96,52 @@ const examSlice = createSlice({
       state.success = false;
       state.error = null;
       state.submissionResult = null;
+    },
+    setAnswer: (
+      state,
+      action: PayloadAction<{
+        exam_question_id: number;
+        optionId: number;
+        isMultiple: boolean;
+      }>
+    ) => {
+      const { exam_question_id, optionId, isMultiple } = action.payload;
+      const existingAnswerIndex = state.answers.findIndex(
+        (answer) => answer.exam_question_id === exam_question_id
+      );
+
+      if (existingAnswerIndex !== -1) {
+        if (isMultiple) {
+          // Xử lý cho câu hỏi nhiều đáp án
+          const currentOptions = state.answers[existingAnswerIndex].options
+            ? state.answers[existingAnswerIndex].options.split(", ").map(Number)
+            : [];
+
+          const optionIndex = currentOptions.indexOf(optionId);
+          if (optionIndex === -1) {
+            currentOptions.push(optionId);
+          } else {
+            currentOptions.splice(optionIndex, 1);
+          }
+
+          state.answers[existingAnswerIndex].options = currentOptions.length
+            ? currentOptions.sort((a, b) => a - b).join(", ")
+            : "";
+        } else {
+          // Xử lý cho câu hỏi một đáp án
+          state.answers[existingAnswerIndex].options = optionId.toString();
+        }
+      } else {
+        state.answers.push({
+          exam_question_id,
+          options: optionId.toString(),
+        });
+      }
+    },
+
+    // Reset answers
+    resetAnswers: (state) => {
+      state.answers = [];
     },
   },
   extraReducers: (builder) => {
@@ -122,10 +195,29 @@ const examSlice = createSlice({
       .addCase(submitExamAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+
+      // Get All Exams History
+      .addCase(getAllExamsHistoryAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = false;
+      })
+      .addCase(getAllExamsHistoryAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.history = action.payload.data; // Lưu danh sách lịch sử bài thi
+        state.total = action.payload.total; // Tổng số lịch sử
+        state.currentPage = action.payload.current_page; // Trang hiện tại
+        state.lastPage = action.payload.last_page; // Tổng số trang
+      })
+      .addCase(getAllExamsHistoryAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
-export const { resetExamState } = examSlice.actions;
+export const { resetExamState, setAnswer, resetAnswers } = examSlice.actions;
 
 export default examSlice.reducer;

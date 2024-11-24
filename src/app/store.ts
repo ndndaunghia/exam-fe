@@ -4,6 +4,7 @@ import subjectSlice from "../services/subjects/subjectSlice";
 import courseSlice from "../services/courses/courseSlice";
 import authorSlice from "../services/authors/authorSlice";
 import examSlice from "../services/exam/examSlice";
+import examReviewSlice from "../services/exam/examReviewSlice";
 
 // Import other reducers as needed
 
@@ -14,6 +15,7 @@ export const store = configureStore({
     course: courseSlice,
     author: authorSlice,
     exam: examSlice,
+    examReview: examReviewSlice,
   },
 });
 
