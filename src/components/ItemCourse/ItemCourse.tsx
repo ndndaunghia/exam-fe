@@ -12,7 +12,8 @@ interface ItemCourseProps {
   backgroundColor?: string;
   hasBorderBottom?: boolean;
   borderBottomColor?: string;
-  onClick?: () => void;  // Thêm prop onClick
+  onClick?: () => void;
+  children?: React.ReactNode; // Add children prop
 }
 
 const ItemCourse: React.FC<ItemCourseProps> = ({
@@ -20,36 +21,51 @@ const ItemCourse: React.FC<ItemCourseProps> = ({
   iconColor = Colors.primaryColor,
   title,
   lessonCount,
-  // backgroundColor = "#f5f5f5",
   hasBorderBottom = false,
   borderBottomColor = "#e0e0e0",
   isSubItemCourse = false,
-  onClick,  // Thêm onClick vào danh sách props
+  onClick,
+  children, // Add children to props
 }) => {
   return (
-    <div
-      className={`flex justify-between items-center px-6 py-4 rounded-md cursor-pointer select-none bg-[#f5f5f5] dark:bg-dark-light dark:text-white  ${
-        hasBorderBottom ? "border-b" : ""
-      }`}
-      style={{
-        // backgroundColor,
-        borderBottomColor: hasBorderBottom ? borderBottomColor : "transparent",
-      }}
-      onClick={onClick}  // Thêm sự kiện onClick
-    >
-      <div className="flex items-center justify-between gap-4">
-        <Icon color={iconColor} />
-        <Typography variant="p" responsive className={`${!isSubItemCourse ? "text-black font-bold dark:text-white" : "text-gray-600 dark:text-white"}`}>
-          {title}
-        </Typography>
+    <div>
+      <div
+        className={`flex justify-between items-center px-6 py-4 rounded-md cursor-pointer select-none bg-[#f5f5f5] dark:bg-dark-light dark:text-white  ${
+          hasBorderBottom ? "border-b" : ""
+        }`}
+        style={{
+          borderBottomColor: hasBorderBottom
+            ? borderBottomColor
+            : "transparent",
+        }}
+        onClick={onClick}
+      >
+        <div className="flex items-center justify-between gap-4">
+          <Icon color={iconColor} />
+          <Typography
+            variant="p"
+            responsive
+            className={`${
+              !isSubItemCourse
+                ? "text-black font-bold dark:text-white"
+                : "text-gray-600 dark:text-white"
+            }`}
+          >
+            {title}
+          </Typography>
+        </div>
+        <div>
+          {!isSubItemCourse && (
+            <Typography variant="p" responsive>
+              {typeof lessonCount === "number"
+                ? lessonCount + " bài học"
+                : lessonCount}
+            </Typography>
+          )}
+        </div>
       </div>
-      <div>
-        <Typography variant="p" responsive>
-          {typeof lessonCount === "number"
-            ? lessonCount + " bài học"
-            : lessonCount}
-        </Typography>
-      </div>
+      {children && <div className="pl-8">{children}</div>}{" "}
+      {/* Render children if present */}
     </div>
   );
 };

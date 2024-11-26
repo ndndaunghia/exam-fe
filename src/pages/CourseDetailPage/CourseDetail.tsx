@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import ItemCourse from "../../components/ItemCourse";
 import Typography from "../../components/Typography/Typography";
 import { FiPlus, FiMinus, FiVideo } from "react-icons/fi";
+import { FaQuestionCircle } from "react-icons/fa";
 import { BsClock } from "react-icons/bs";
-import { IoMdPlayCircle } from "react-icons/io";
+import { IoBook } from "react-icons/io5";
 import { BsPersonVideo3 } from "react-icons/bs";
 import Button from "../../components/Button/Button";
 import Colors from "../../config/colors";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { getDetailCourseAsync } from "../../services/courses/courseSlice";
 import Loading from "../../components/Loading";
@@ -18,6 +19,8 @@ const CourseDetail: React.FC = () => {
   const dispatch = useAppDispatch();
   const [expandedChapters, setExpandedChapters] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -49,7 +52,13 @@ const CourseDetail: React.FC = () => {
 
   const course = courses[0]; // For better readability
 
-  console.log(course);
+  const handleBuyCourse = () => {
+    if (Math.floor(course.price) === 0) {
+      navigate(`/course-player/${course.id}`);
+    } else {
+      // Handle buy course
+    }
+  };
 
   return (
     <div className="md:px-4 lg:px-8 xl:px-14 2xl:px-22 mt-12 min-h-screen dark:bg-dark">
@@ -98,10 +107,31 @@ const CourseDetail: React.FC = () => {
                 <ItemCourse
                   icon={expandedChapters.includes(module.id) ? FiMinus : FiPlus}
                   title={`${module.id}. ${module.name}`}
-                  lessonCount={course.module?.length || 0}
+                  lessonCount={module.lesson?.length || 0}
                   backgroundColor="#f5f5f5"
                   onClick={() => toggleChapter(module.id)}
-                />
+                >
+                  {expandedChapters.includes(module.id) &&
+                    module.lesson?.map((lesson) => (
+                      <ItemCourse
+                        key={lesson.id}
+                        icon={IoBook}
+                        title={lesson.name}
+                        lessonCount={lesson.question?.length || 0}
+                        isSubItemCourse
+                      >
+                        {lesson.question?.map((question) => (
+                          <ItemCourse
+                            key={question.id}
+                            icon={FaQuestionCircle}
+                            title={question.name}
+                            lessonCount={0}
+                            isSubItemCourse
+                          />
+                        ))}
+                      </ItemCourse>
+                    ))}
+                </ItemCourse>
               </div>
             ))}
           </div>
@@ -121,14 +151,20 @@ const CourseDetail: React.FC = () => {
                 responsive
                 className="text-primary-light my-4"
               >
-                299.000đ
+                {Math.floor(course.price) === 0
+                  ? "Miễn phí"
+                  : `${Math.floor(course.price)}đ`}
               </Typography>
               <Button
                 backgroundColor={Colors.secondaryLightColor}
                 backgroundHover={Colors.secondaryColor}
                 color="#ffffff"
-                content="MUA NGAY"
-                onClick={() => {}}
+                content={
+                  Math.floor(course.price) === 0
+                    ? "Bắt đầu học"
+                    : "Mua khóa học"
+                }
+                onClick={handleBuyCourse}
               />
               <ul className="my-10 hidden md:flex md:flex-col md:justify-start md:items-start">
                 <li className="flex justify-center items-center gap-2 my-2">

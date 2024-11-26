@@ -36,6 +36,8 @@ export interface Question {
   deleted_at: string | null;
   status_string: string;
   total_correct_option: number;
+  is_checked?: boolean;
+  is_unlocked?: boolean;
   difficulty_string: string;
   options: Option[];
 }

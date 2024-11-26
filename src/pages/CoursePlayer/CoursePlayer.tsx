@@ -56,10 +56,15 @@ const CoursePlayer = () => {
               {/* Course Logo and Play Button */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-32 h-32 relative">
-                  <img
-                    src="/api/placeholder/128/128"
-                    alt="C++ Logo"
-                    className="rounded-lg shadow-lg"
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src="https://www.youtube.com/embed/YvjhyepLwBE?si=-EMZwp1qipIZMmMJ"
+                    title="Giới thiệu khóa học"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="absolute inset-0"
                   />
                   <button className="absolute -right-4 -bottom-4 bg-white rounded-full p-4 shadow-lg">
                     <FaPlay className="w-6 h-6 text-blue-500" />

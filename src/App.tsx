@@ -23,13 +23,17 @@ function App() {
             <Route element={<ExamPage />} path="/exam/:examId" />
             <Route element={<ExamResult />} path="/exam-result" />
             <Route element={<ExamHistoriesPage />} path="/exam-histories" />
-            <Route element={<ExamReviewPage />} path="/exam-histories/:historyId" />
+            <Route
+              element={<ExamReviewPage />}
+              path="/exam-histories/:historyId"
+            />
+            <Route element={<CoursePlayer />} path="/course-player/:courseId" />
           </Route>
           <Route element={<HomePage />} path="/" />
           <Route element={<ListTestPage />} path="/list-exam" />
           <Route element={<CoursePage />} path="/course" />
           <Route element={<CourseDetailPage />} path="/course/:courseId" />
-          <Route element={<CoursePlayer />} path="/course-player/:courseId" />
+
           <Route element={<ErrorPage />} path="*" />
         </Routes>
       </Suspense>

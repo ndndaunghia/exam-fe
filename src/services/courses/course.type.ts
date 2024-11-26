@@ -9,7 +9,7 @@ export interface Course {
   author_id: string;
   total_purchases: number;
   description: string | null;
-  price: string;  // Thay đổi từ number sang string vì API trả về price dạng string
+  price: number;  // Thay đổi từ number sang string vì API trả về price dạng string
   duration: number;
   status: number;
   created_at: string;
