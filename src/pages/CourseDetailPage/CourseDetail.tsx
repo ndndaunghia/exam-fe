@@ -103,7 +103,7 @@ const CourseDetail: React.FC = () => {
           </div>
           <div className="mt-10 flex flex-col gap-4">
             {course.module?.map((module) => (
-              <div key={module.id}>
+              <div key={module.id} >
                 <ItemCourse
                   icon={expandedChapters.includes(module.id) ? FiMinus : FiPlus}
                   title={`${module.id}. ${module.name}`}

@@ -16,3 +16,8 @@ export const register = async (authRequest: AuthRequest) => {
   );
   return response.data;
 };
+
+export const getUserDetail = async (userId: string) => {
+  const response = await axiosInstance.get(`/user-detail/${userId}`);
+  return response.data;
+};

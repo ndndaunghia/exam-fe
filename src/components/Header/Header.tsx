@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 
 import { useTheme } from "../../hooks/useTheme";
 import {
+  getUserDetailAsync,
   loginAsync,
   logout,
   registerAsync,
@@ -35,6 +36,7 @@ import {
   REGISTER_SUCCESS,
 } from "../../utils/constants";
 import { AuthRequest } from "../../services/auth/auth.type";
+import { getUserDetail } from "../../services/auth/authAPI";
 
 const products = [
   {
@@ -146,7 +148,6 @@ export default function Header() {
 
   const onSignUpSubmit = handleSubmitSignUp(async (data) => {
     try {
-     
       const { confirm_password, ...payload } = data;
 
       const resultAction = await dispatch(registerAsync(payload));
@@ -164,27 +165,27 @@ export default function Header() {
     }
   });
 
-  // useEffect(() => {
-  //   const userId = localStorage.getItem("userId");
-  //   if (userId) {
-  //     const fetchUser = async () => {
-  //       try {
-  //         const resultAction = await dispatch(fetchUserData(userId));
-  //         if (fetchUserData.fulfilled.match(resultAction)) {
-  //           // Successfully fetched user data
-  //           console.log("User data:", resultAction.payload);
-  //         } else {
-  //           // Handle errors
-  //           console.error("Failed to fetch user data:", resultAction.payload);
-  //         }
-  //       } catch (error) {
-  //         console.error("Error during fetchUserData:", error);
-  //       }
-  //     };
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      const fetchUser = async () => {
+        try {
+          const resultAction = await dispatch(getUserDetailAsync(userId));
+          if (getUserDetailAsync.fulfilled.match(resultAction)) {
+            // Successfully fetched user data
+            console.log("User data:", resultAction.payload);
+          } else {
+            // Handle errors
+            console.error("Failed to fetch user data:", resultAction.payload);
+          }
+        } catch (error) {
+          console.error("Error during fetchUserData:", error);
+        }
+      };
 
-  //     fetchUser();
-  //   }
-  // }, [dispatch]);
+      fetchUser();
+    }
+  }, [dispatch]);
 
   return (
     <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50 dark:bg-dark">

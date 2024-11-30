@@ -28,7 +28,7 @@ const ItemCourse: React.FC<ItemCourseProps> = ({
   children, // Add children to props
 }) => {
   return (
-    <div>
+    <div className="my-1">
       <div
         className={`flex justify-between items-center px-6 py-4 rounded-md cursor-pointer select-none bg-[#f5f5f5] dark:bg-dark-light dark:text-white  ${
           hasBorderBottom ? "border-b" : ""

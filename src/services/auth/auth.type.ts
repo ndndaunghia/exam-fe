@@ -41,35 +41,42 @@
 // }
 
 export interface User {
-  id: number,
-  email: string,
-  user_type: number,
-  name: string,
-  avatar_url: string | null,
-  course_id: number | null,
-  email_verified_at: string | null,
-  createted_at: string | null,
-  updated_at: string,
-  created_at: string,
-  type_string: string,
+  id: number;
+  course_id: number | null;
+  name: string;
+  email: string;
+  avatar_url: string | null;
+  user_type: number;
+  email_verified_at: string | null;
+  type_string: string;
+  // email: string,
+  // user_type: number,
+  // name: string,
+  // avatar_url: string | null,
+  // course_id: number | null,
+  // email_verified_at: string | null,
+  // createted_at: string | null,
+  // updated_at: string,
+  // created_at: string,
+  // type_string: string,
 }
 
 export interface AuthRequest {
-  email: string,
-  password: string,
-  confirm_password?: string,
+  email: string;
+  password: string;
+  confirm_password?: string;
 }
 
 export interface AuthResponse {
-  msg: string,
-  code: number,
-  data: AuthDataResponse,
+  msg: string;
+  code: number;
+  data: AuthDataResponse;
 }
 
 export interface AuthDataResponse {
-  message: string | null,
-  user: User,
-  token: string,
+  message: string | null;
+  user: User;
+  token: string;
 }
 
 export interface AuthState {

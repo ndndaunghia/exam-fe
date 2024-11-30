@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { login, register } from "./authAPI";
+import { getUserDetail, login, register } from "./authAPI";
 import { AuthRequest, AuthState } from "./auth.type";
 
 const initialState: AuthState = {
@@ -44,6 +44,20 @@ export const registerAsync = createAsyncThunk(
   }
 );
 
+export const getUserDetailAsync = createAsyncThunk(
+  "auth/getUserDetail",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const response = await getUserDetail(userId);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Lấy thông tin người dùng thất bại"
+      );
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -80,10 +94,20 @@ const authSlice = createSlice({
       .addCase(registerAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(getUserDetailAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getUserDetailAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+      })
+      .addCase(getUserDetailAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
-
 
 export const { logout } = authSlice.actions;
 
