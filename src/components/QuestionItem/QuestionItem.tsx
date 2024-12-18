@@ -53,6 +53,12 @@ const QuestionItem = forwardRef<HTMLDivElement, QuestionItemProps>(
           </span>
           <p className="text-lg dark:text-white">{question.name}</p>
         </div>
+
+        {question?.image_url && (
+          <div>
+            <img src={question.image_url} alt="question" />
+          </div>
+        )}
         <div className="ml-8 mt-4">
           {question.options.map((option) => (
             <div key={option.id} className="mb-2">

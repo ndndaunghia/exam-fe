@@ -123,7 +123,7 @@ const CourseCard = (props: Course) => {
             </div>
           </div>
           <div className="flex flex-col md:justify-between items-end">
-            <h3 className="text-black dark:text-white">{props.price}</h3>
+            <h3 className="text-black dark:text-white">{Math.floor(props.price)}</h3>
             <h3 className="line-through text-sm text-gray-400">499.000đ</h3>
           </div>
         </div>

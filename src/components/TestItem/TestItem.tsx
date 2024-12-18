@@ -39,7 +39,7 @@ const TestItem = ({ exam }: { exam: Exam }) => {
       <div className="flex gap-2 my-4">
         <p className="dark:text-white">Năm học: {exam.year}</p>
         <p className="dark:text-white">|</p>
-        <p className="dark:text-white">{exam.questions?.length} câu hỏi</p>
+        <p className="dark:text-white">{exam.total_question} câu hỏi</p>
       </div>
       {/* <div className="bg-secondary-light max-w-fit px-2 py-1 rounded-2xl my-4">
         <p className="text-white">#Tin học</p>

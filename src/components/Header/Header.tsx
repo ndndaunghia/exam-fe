@@ -1,6 +1,8 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
 
 import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
+
+import Logo from "../../assets/images/exam_logo.jpeg";
 import {
   ArrowPathIcon,
   Bars3Icon,
@@ -194,13 +196,14 @@ export default function Header() {
         aria-label="Global"
       >
         <div className="flex xl:flex-1">
-          <Link to="/" className="-m-1.5 p-1.5">
-            <span className="sr-only">Your Company</span>
-            <img
-              className="h-8 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-              alt=""
-            />
+          <Link
+            to="/"
+            className="-m-1.5 p-1.5 flex justify-center items-center gap-4"
+          >
+            <img className="w-12 rounded-lg" src={Logo} alt="" />
+            <span className="text-2xl font-semibold leading-6 bg-gradient-to-r from-[#006e4a] to-[#006E9A] bg-clip-text text-transparent">
+              Sky Edu
+            </span>
           </Link>
         </div>
         <div className="flex xl:hidden">
@@ -227,12 +230,12 @@ export default function Header() {
           >
             Khóa học online
           </Link>
-          <a
-            href="#"
+          <Link
+            to="/my-course"
             className="text-base font-semibold leading-6 text-gray-900 dark:text-white"
           >
             Khóa học của tôi
-          </a>
+          </Link>
 
           <Popover className="relative">
             <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none dark:text-white">
