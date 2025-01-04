@@ -14,9 +14,16 @@ const initialState: CourseState = {
 
 export const getAllCoursesAsync = createAsyncThunk(
   "course/getAllCourses",
-  async (params: { page: number; limit: number }, { rejectWithValue }) => {
+  async (params: {
+    page: number;
+    limit: number;
+    subject_id?: string;
+    name?: string;
+  }, { rejectWithValue }) => {
     try {
-      const response = await getAllCourses(params.page, params.limit);
+      const response = await getAllCourses(params);
+      console.log("response", response.data);
+      
       return response.data.courses;
     } catch (error: any) {
       return rejectWithValue(

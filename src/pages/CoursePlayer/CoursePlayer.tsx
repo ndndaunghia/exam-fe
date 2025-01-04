@@ -11,6 +11,7 @@ import {
   answeredQuestionAsync,
   checkLessonAsync,
 } from "../../services/learn_course/learnCourseSlice";
+import ChatBot from "../../components/ChatBot/ChatBot";
 
 interface QuestionOption {
   id: number;
@@ -83,7 +84,7 @@ const CoursePlayer = () => {
               width="100%"
               height="100%"
               // src={selectedContent.data.video_url}
-              src="https://www.youtube.com/embed/ht6yPQd8Al4?si=N66BfKMIdfaxSBV4"
+              src={selectedContent.data.video_url}
               title={selectedContent.data.name}
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -145,7 +146,7 @@ const CoursePlayer = () => {
             alert("Rất tiếc, câu trả lời chưa chính xác");
           }
         } catch (error) {
-          alert(error instanceof Error ? error.message : "Có lỗi xảy ra");
+          alert(error instanceof Error ? error.message : "Rất tiếc, câu trả lời chưa chính xác");
         }
       };
 
@@ -270,10 +271,7 @@ const CoursePlayer = () => {
 
       {/* Footer Actions */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex justify-between">
-        <button className="flex items-center text-orange-500">
-          <FiMessageCircle className="w-5 h-5 mr-2" />
-          Hỏi đáp
-        </button>
+        <ChatBot />
       </div>
     </div>
   );

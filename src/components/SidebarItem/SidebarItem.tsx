@@ -4,9 +4,24 @@ import SidebarItemType from "./SidebarItem.type";
 
 const SidebarItem = (props: SidebarItemType) => {
   const [isOpenTab, setIsOpenTab] = React.useState(true);
+  const [checkedItems, setCheckedItems] = React.useState<{
+    [key: string]: boolean;
+  }>({});
 
   const handleOpenTab = () => {
     setIsOpenTab((prev: boolean) => !prev);
+  };
+
+  const handleChange = (
+    label: string,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const checked = e.target.checked;
+    setCheckedItems((prev) => ({
+      ...prev,
+      [label]: checked,
+    }));
+    props.onSelect?.(label, checked);
   };
 
   return (
@@ -29,7 +44,13 @@ const SidebarItem = (props: SidebarItemType) => {
         {props?.labels?.map((label) => {
           return (
             <label htmlFor={label} className="my-2 cursor-pointer" key={label}>
-              <input type="checkbox" name={props.type} id={label} />
+              <input
+                type="checkbox"
+                name={props.type}
+                id={label}
+                checked={checkedItems[label] || false}
+                onChange={(e) => handleChange(label, e)}
+              />
               <span className="mx-4">{label}</span>
             </label>
           );
