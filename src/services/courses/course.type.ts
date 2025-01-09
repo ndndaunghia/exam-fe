@@ -9,11 +9,11 @@ export interface Course {
   author_id: string;
   total_purchases: number;
   description: string | null;
-  price: number;  // Thay đổi từ number sang string vì API trả về price dạng string
+  price: string;  // Thay đổi từ number sang string vì API trả về price dạng string
   duration: number;
   status: number;
-  created_at: string;
-  updated_at: string;
+  created_at: string | null;
+  updated_at: string | null;
   deleted_at: string | null;
   status_string: string;
   subject: Subject;

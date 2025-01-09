@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CourseState } from "./course.type";
-import { getAllCourses, getDetailCourse } from "./courseApi";
+import { getAllCourses, getDetailCourse, getMyCourses } from "./courseApi";
 
 const initialState: CourseState = {
   courses: [], // Mảng môn học khởi tạo rỗng
@@ -14,16 +14,19 @@ const initialState: CourseState = {
 
 export const getAllCoursesAsync = createAsyncThunk(
   "course/getAllCourses",
-  async (params: {
-    page: number;
-    limit: number;
-    subject_id?: string;
-    name?: string;
-  }, { rejectWithValue }) => {
+  async (
+    params: {
+      page: number;
+      limit: number;
+      subject_id?: string;
+      name?: string;
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await getAllCourses(params);
       console.log("response", response.data);
-      
+
       return response.data.courses;
     } catch (error: any) {
       return rejectWithValue(
@@ -42,6 +45,20 @@ export const getDetailCourseAsync = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Lấy chi tiết môn học thất bại"
+      );
+    }
+  }
+);
+
+export const getMyCoursesAsync = createAsyncThunk(
+  "course/getMyCourses",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const response = await getMyCourses(userId);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Lấy danh sách môn học thất bại"
       );
     }
   }
@@ -86,6 +103,20 @@ const courseSlice = createSlice({
         state.success = true;
       })
       .addCase(getDetailCourseAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(getMyCoursesAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = false;
+      })
+      .addCase(getMyCoursesAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.courses = action.payload;
+        state.success = true;
+      })
+      .addCase(getMyCoursesAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

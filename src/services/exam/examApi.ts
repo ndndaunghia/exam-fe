@@ -1,21 +1,22 @@
 import axiosInstance from "../../utils/axiosInstance";
 import {
   DetailExamResponse,
-  ExamHistoryReview,
   ExamHistoryReviewResponse,
   ExamResponse,
-  ExamResult,
   ExamSubmissionRequest,
   ExamSubmissionResponse,
   ListExamResponse,
 } from "./exam.type";
 
-export const getAllExams = async (page: number = 1, limit: number = 10) => {
+export const getAllExams = async (params: {
+  page: number;
+  limit: number;
+  subject_id?: string;
+  year?: string;
+  name?: string;
+}) => {
   const response = await axiosInstance.get<ListExamResponse>("exams", {
-    params: {
-      page,
-      limit,
-    },
+    params,
   });
   return response.data;
 };

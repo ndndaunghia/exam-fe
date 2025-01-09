@@ -24,11 +24,17 @@ const initialState: ExamSliceState = {
 export const getAllExamsAsync = createAsyncThunk(
   "exam/getAllExams",
   async (
-    params: { page?: number; limit?: number } = {},
+    params: {
+      page: number;
+      limit: number;
+      subject_id?: string;
+      year?: string;
+      name?: string;
+    },
     { rejectWithValue }
   ) => {
     try {
-      const response = await getAllExams(params.page, params.limit);
+      const response = await getAllExams(params);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(

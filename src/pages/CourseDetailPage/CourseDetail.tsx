@@ -12,6 +12,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { getDetailCourseAsync } from "../../services/courses/courseSlice";
 import Loading from "../../components/Loading";
+import axios from "axios";
 
 const CourseDetail: React.FC = () => {
   const { courseId } = useParams();
@@ -19,15 +20,52 @@ const CourseDetail: React.FC = () => {
   const dispatch = useAppDispatch();
   const [expandedChapters, setExpandedChapters] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasPurchased, setHasPurchased] = useState(false);
+  const [purchasedCourses, setPurchasedCourses] = useState<any[]>([]);
 
   const navigate = useNavigate();
 
+  // Fetch purchased courses
   useEffect(() => {
-    const fetchCourse = async () => {
+    const fetchPurchasedCourses = async () => {
+      try {
+        const userId = localStorage.getItem("userId");
+        if (!userId) return;
+
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/v1.0/my-courses/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (response.data.code === 200) {
+          setPurchasedCourses(response.data.data.courses);
+        }
+      } catch (error) {
+        console.error("Error fetching purchased courses:", error);
+      }
+    };
+
+    fetchPurchasedCourses();
+  }, []);
+
+  // Fetch course detail and check purchase status
+  useEffect(() => {
+    const fetchCourseAndCheckPurchase = async () => {
       try {
         setIsLoading(true);
         if (courseId) {
           await dispatch(getDetailCourseAsync(parseInt(courseId)));
+
+          // Check if course is in purchased courses
+          const isPurchased = purchasedCourses.some(
+            (purchasedCourse) =>
+              purchasedCourse.course_id === parseInt(courseId)
+          );
+          setHasPurchased(isPurchased);
         }
       } catch (error) {
         console.error("Error fetching course:", error);
@@ -36,29 +74,47 @@ const CourseDetail: React.FC = () => {
       }
     };
 
-    fetchCourse();
-  }, [courseId, dispatch]);
+    fetchCourseAndCheckPurchase();
+  }, [courseId, dispatch, purchasedCourses]);
 
-  const toggleChapter = (chapterId: number) => {
-    setExpandedChapters((prev) =>
-      prev.includes(chapterId)
-        ? prev.filter((id) => id !== chapterId)
-        : [...prev, chapterId]
-    );
+  const handleCourseAccess = async () => {
+    if (!courses || !courses[0]) return;
+    const course = courses[0];
+
+    // If free course or already purchased, go to course player
+    if (Math.floor(Number(course.price)) === 0 || hasPurchased) {
+      navigate(`/course-player/${course.id}`);
+      return;
+    }
+
+    // Otherwise proceed with payment
+    try {
+      localStorage.setItem("pending_course_id", course.id.toString());
+
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/v1.0/vnpay-payment`,
+        {
+          course_id: course.id,
+          amount: Math.floor(Number(course.price)) * 100,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      window.location.href = response.data.data.payment_url;
+    } catch (error) {
+      console.error("Error buying course:", error);
+    }
   };
 
   if (isLoading) return <Loading />;
   if (!courses || !courses[0]) return <div>No course found</div>;
 
-  const course = courses[0]; // For better readability
-
-  const handleBuyCourse = () => {
-    if (Math.floor(course.price) === 0) {
-      navigate(`/course-player/${course.id}`);
-    } else {
-      // Handle buy course
-    }
-  };
+  const course = courses[0];
 
   return (
     <div className="md:px-4 lg:px-8 xl:px-14 2xl:px-22 mt-12 min-h-screen dark:bg-dark">
@@ -103,7 +159,7 @@ const CourseDetail: React.FC = () => {
           </div>
           <div className="mt-10 flex flex-col gap-4">
             {course.module?.map((module) => (
-              <div key={module.id} >
+              <div key={module.id}>
                 <ItemCourse
                   icon={expandedChapters.includes(module.id) ? FiMinus : FiPlus}
                   title={`${module.id}. ${module.name}`}
@@ -151,20 +207,22 @@ const CourseDetail: React.FC = () => {
                 responsive
                 className="text-primary-light my-4"
               >
-                {Math.floor(course.price) === 0
+                {Math.floor(Number(course.price)) === 0
                   ? "Miễn phí"
-                  : `${Math.floor(course.price)}đ`}
+                  : `${Math.floor(Number(course.price))}đ`}
               </Typography>
               <Button
                 backgroundColor={Colors.secondaryLightColor}
                 backgroundHover={Colors.secondaryColor}
                 color="#ffffff"
                 content={
-                  Math.floor(course.price) === 0
+                  hasPurchased
+                    ? "Vào học"
+                    : Math.floor(Number(course.price)) === 0
                     ? "Bắt đầu học"
                     : "Mua khóa học"
                 }
-                onClick={handleBuyCourse}
+                onClick={handleCourseAccess}
               />
               <ul className="my-10 hidden md:flex md:flex-col md:justify-start md:items-start">
                 <li className="flex justify-center items-center gap-2 my-2">

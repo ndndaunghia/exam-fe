@@ -234,7 +234,7 @@ export default function Header() {
             to="/my-course"
             className="text-base font-semibold leading-6 text-gray-900 dark:text-white"
           >
-            Khóa học của tôi
+            Khóa học đã mua
           </Link>
 
           <Popover className="relative">

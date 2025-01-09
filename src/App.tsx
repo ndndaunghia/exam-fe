@@ -7,6 +7,7 @@ import ExamResult from "./pages/ExamPage/ExamResult";
 import ExamHistoriesPage from "./pages/ExamHistories/ExamHistoriesPage";
 import ExamReviewPage from "./pages/ExamReview/ExamReviewPage";
 import MyCoursePage from "./pages/MyCoursePage";
+import PaymentResult from "./pages/PaymentResult";
 
 const ExamPage = lazy(() => import("./pages/ExamPage"));
 const ListTestPage = lazy(() => import("./pages/ListTestPage"));
@@ -30,8 +31,10 @@ function App() {
             />
             <Route element={<CoursePlayer />} path="/course-player/:courseId" />
             <Route element={<MyCoursePage />} path="/my-course" />
+            
           </Route>
           <Route element={<HomePage />} path="/" />
+          <Route element={<PaymentResult/>} path="/payment-result"/>
           <Route element={<ListTestPage />} path="/list-exam" />
           <Route element={<CoursePage />} path="/course" />
           <Route element={<CourseDetailPage />} path="/course/:courseId" />
