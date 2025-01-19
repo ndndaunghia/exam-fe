@@ -31,6 +31,12 @@ const ExamHistories = () => {
     dispatch(getAllExamsHistoryAsync({ page: 1, limit: 10 }));
   }, [dispatch]);
 
+  const userId = parseInt(localStorage.getItem("userId") || "0");
+
+  const filteredHistory = history.filter((exam) => {
+    return exam.user_id === userId;
+  });
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -38,6 +44,8 @@ const ExamHistories = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+
+  
 
   return (
     <div className="py-32 px-4 sm:px-6 lg:px-8">
@@ -52,7 +60,7 @@ const ExamHistories = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {history.map((exam) => (
+          {filteredHistory.map((exam) => (
             <div
               key={exam.id}
               className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl"
