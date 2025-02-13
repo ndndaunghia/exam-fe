@@ -83,12 +83,12 @@ const ExamResult = () => {
               >
                 Về trang chủ
               </button>
-              <button
+              {/* <button
                 onClick={handleReviewExam}
                 className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-800 transition-colors"
               >
                 Xem lại bài làm
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

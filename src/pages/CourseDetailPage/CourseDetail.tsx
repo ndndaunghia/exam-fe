@@ -25,6 +25,14 @@ const CourseDetail: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const toggleChapter = (chapterId: number) => {
+    if (expandedChapters.includes(chapterId)) {
+      setExpandedChapters((prev) => prev.filter((id) => id !== chapterId));
+    } else {
+      setExpandedChapters((prev) => [...prev, chapterId]);
+    }
+  }
+
   // Fetch purchased courses
   useEffect(() => {
     const fetchPurchasedCourses = async () => {

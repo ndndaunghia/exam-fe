@@ -116,7 +116,7 @@ const HistoryQuestionItem = ({ question, questionIndex, id }) => {
                   </span>
                 )}
               </div>
-              {option.explanation && isSubmitted && (
+              {option.explanation && (
                 <div className="mt-2 ml-7 text-sm text-gray-600 dark:text-gray-300 border-t pt-2">
                   Giải thích: {option.explanation}
                 </div>

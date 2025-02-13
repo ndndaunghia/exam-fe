@@ -6,6 +6,7 @@ import CourseCard from "../../components/CourseCard";
 import Footer from "../../components/Footer/Footer";
 import { Subject } from "../../services/subjects/subject.type";
 import { Module } from "../../services/modules/module.type";
+import Loading from "../../components/Loading";
 
 interface PurchasedCourse {
   id: number;
@@ -129,9 +130,10 @@ const MyCoursePage = () => {
           <div className="grid grid-cols-12 px-4 gap-6 h-full items-center justify-center">
             <div className="col-span-12 sm:col-span-12 md:col-span-12 lg:col-span-10 rounded-xl">
               {isLoading ? (
-                <div className="flex justify-center items-center h-64">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-                </div>
+                <Loading />
+                // <div className="flex justify-center items-center h-64">
+                //   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+                // </div>
               ) : error ? (
                 <div className="text-center text-red-500 py-8">{error}</div>
               ) : myCourses.length === 0 ? (

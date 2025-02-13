@@ -66,8 +66,8 @@ const ExamController: React.FC<ExamControllerProps> = ({
   return (
     <div className="dark:text-white">
       <div className="mb-4">
-        <h2>Thời gian làm bài</h2>
-        <span className="text-lg font-bold">39:25</span>
+        {/* <h2>Thời gian làm bài</h2>
+        <span className="text-lg font-bold">39:25</span> */}
       </div>
       <div className="flex flex-col">
         <button

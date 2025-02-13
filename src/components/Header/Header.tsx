@@ -237,7 +237,7 @@ export default function Header() {
             Khóa học đã mua
           </Link>
 
-          <Popover className="relative">
+          {/* <Popover className="relative">
             <Popover.Button className="flex items-center gap-x-1 text-base font-semibold leading-6 text-gray-900 outline-none dark:text-white">
               Tài liệu ôn thi
               <ChevronDownIcon
@@ -284,7 +284,7 @@ export default function Header() {
                 </div>
               </Popover.Panel>
             </Transition>
-          </Popover>
+          </Popover> */}
         </Popover.Group>
 
         <div className="hidden xl:flex xl:flex-1 xl:justify-end xl:items-center gap-4">
